@@ -1,0 +1,1971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BLOOM — Socks & Fertility Store</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --blush: #ede8e1;
+  --rose: #5c5347;
+  --deep: #2b2620;
+  --soft: #f7f4f0;
+  --cream: #f5f2ed;
+  --warm: #e8e0d4;
+  --gray: #8a857e;
+  --dark: #1e1a16;
+  --white: #ffffff;
+  --accent: #b5a898;
+  --gold: #c8a96e;
+  --success: #6daa7e;
+  --shadow-sm: 0 2px 12px rgba(122,48,72,0.08);
+  --shadow-md: 0 8px 32px rgba(122,48,72,0.12);
+  --shadow-lg: 0 20px 60px rgba(122,48,72,0.18);
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--cream);
+  color: var(--dark);
+  min-height: 100vh;
+}
+
+/* ===== HEADER ===== */
+header {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: rgba(253,245,246,0.97);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(201,118,138,0.15);
+  height: 68px;
+  display: flex; align-items: center;
+  padding: 0 48px;
+  justify-content: space-between;
+}
+.logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px; font-weight: 700;
+  color: var(--deep);
+  letter-spacing: 2px;
+  text-decoration: none;
+  display: flex; align-items: center; gap: 8px;
+}
+.logo-dot {
+  width: 8px; height: 8px;
+  background: var(--rose);
+  border-radius: 50%;
+  margin-bottom: 2px;
+}
+.header-center {
+  display: flex; align-items: center;
+  background: var(--white);
+  border: 1.5px solid rgba(201,118,138,0.25);
+  border-radius: 50px;
+  padding: 8px 20px; gap: 10px;
+  box-shadow: var(--shadow-sm);
+}
+.header-center input {
+  background: none; border: none; outline: none;
+  font-family: 'DM Sans', sans-serif; font-size: 14px;
+  color: var(--dark); width: 220px;
+}
+.header-center input::placeholder { color: var(--gray); }
+.header-center button {
+  background: none; border: none; cursor: pointer; padding: 0;
+  display: flex; align-items: center;
+}
+.header-center button img { width: 18px; opacity: 0.5; }
+.header-icons {
+  display: flex; align-items: center; gap: 4px;
+}
+.icon-btn {
+  width: 44px; height: 44px;
+  background: transparent;
+  border: none; cursor: pointer;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  transition: background 0.2s;
+}
+.icon-btn:hover { background: rgba(201,118,138,0.1); }
+.icon-btn img { width: 24px; height: 24px; }
+.badge {
+  position: absolute; top: 4px; right: 4px;
+  background: var(--rose);
+  color: var(--white);
+  font-size: 10px; font-weight: 700;
+  width: 17px; height: 17px;
+  border-radius: 50%;
+  display: none; align-items: center; justify-content: center;
+}
+
+/* ===== HERO ===== */
+.hero {
+  margin-top: 68px;
+  position: relative;
+  height: 580px;
+  overflow: hidden;
+  display: flex; align-items: center;
+}
+.hero-bg-img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+}
+.hero-bg-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to right, rgba(30,24,18,0.6) 0%, rgba(30,24,18,0.2) 65%, transparent 100%);
+}
+
+.hero-content {
+  position: relative; z-index: 2;
+  padding: 0 80px;
+  display: flex; align-items: center;
+  width: 100%; gap: 60px;
+}
+.hero-text { flex: 1; }
+.hero-tag {
+  display: inline-block;
+  background: rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.9);
+  font-size: 12px; font-weight: 600;
+  letter-spacing: 2px; text-transform: uppercase;
+  padding: 6px 16px; border-radius: 50px;
+  margin-bottom: 20px;
+}
+.hero-text h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 58px; font-weight: 700;
+  color: var(--white);
+  line-height: 1.12;
+  margin-bottom: 20px;
+}
+.hero-text h1 em {
+  color: var(--gold); font-style: italic;
+}
+.hero-text p {
+  color: rgba(255,255,255,0.78);
+  font-size: 16px; font-weight: 300;
+  line-height: 1.75;
+  max-width: 420px;
+  margin-bottom: 36px;
+}
+.hero-cta {
+  background: var(--deep);
+  color: var(--white);
+  border: none; cursor: pointer;
+  padding: 15px 40px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px; font-weight: 600;
+  border-radius: 50px;
+  letter-spacing: 0.5px;
+  transition: all 0.25s;
+  box-shadow: 0 8px 24px rgba(122,48,72,0.25);
+}
+.hero-cta:hover {
+  background: var(--rose);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(201,118,138,0.4);
+}
+.hero-image-wrap {
+  flex-shrink: 0;
+  width: 340px; height: 380px;
+  position: relative;
+}
+.hero-image-wrap img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  border-radius: 40% 60% 55% 45% / 45% 40% 60% 55%;
+  box-shadow: var(--shadow-lg);
+}
+.hero-stats {
+  display: flex; gap: 40px; margin-top: 40px;
+}
+.stat-item { text-align: center; }
+.stat-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px; font-weight: 700;
+  color: var(--white);
+}
+.stat-label { font-size: 12px; color: rgba(255,255,255,0.6); font-weight: 400; }
+
+/* ===== SECTION ===== */
+.section { padding: 72px 80px; }
+.section-header { margin-bottom: 44px; }
+.section-tag {
+  display: inline-block;
+  background: var(--blush);
+  color: var(--rose);
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 2px; text-transform: uppercase;
+  padding: 5px 14px; border-radius: 50px;
+  margin-bottom: 12px;
+}
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 38px; font-weight: 700;
+  color: var(--deep);
+  margin-bottom: 6px;
+}
+.section-sub { color: var(--gray); font-size: 15px; font-weight: 300; }
+
+/* ===== FILTER BAR ===== */
+.filter-bar {
+  display: flex; gap: 10px; margin-bottom: 40px; flex-wrap: wrap;
+  align-items: center;
+}
+.filter-label { font-size: 13px; color: var(--gray); margin-right: 4px; }
+.filter-btn {
+  padding: 8px 22px;
+  border: 1.5px solid rgba(201,118,138,0.3);
+  background: var(--white);
+  border-radius: 50px;
+  font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
+  cursor: pointer; transition: all 0.2s;
+  color: var(--gray);
+}
+.filter-btn.active, .filter-btn:hover {
+  background: var(--deep); color: var(--white);
+  border-color: var(--deep);
+}
+
+/* ===== PRODUCT GRID ===== */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.product-card {
+  background: var(--white);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.3s cubic-bezier(.25,.8,.25,1), box-shadow 0.3s;
+  cursor: pointer;
+  position: relative;
+}
+.product-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-lg);
+}
+.card-img-wrap {
+  position: relative;
+  height: 270px;
+  background: var(--soft);
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.card-img-wrap img {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  padding: 20px;
+  transition: transform 0.4s ease;
+}
+.product-card:hover .card-img-wrap img { transform: scale(1.07); }
+
+.card-overlay-actions {
+  position: absolute; inset: 0;
+  background: rgba(45,31,36,0.0);
+  display: flex; align-items: flex-end; justify-content: center;
+  padding-bottom: 16px;
+  opacity: 0;
+  transition: all 0.25s;
+}
+.product-card:hover .card-overlay-actions { opacity: 1; background: rgba(45,31,36,0.05); }
+.overlay-btn {
+  background: var(--white);
+  color: var(--deep);
+  border: none; cursor: pointer;
+  padding: 10px 28px;
+  border-radius: 50px;
+  font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600;
+  box-shadow: var(--shadow-md);
+  transition: all 0.2s;
+  display: flex; align-items: center; gap: 6px;
+}
+.overlay-btn:hover { background: var(--deep); color: var(--white); }
+.overlay-btn img { width: 16px; }
+.overlay-btn:hover img { filter: invert(1); }
+
+.card-top-actions {
+  position: absolute; top: 12px; right: 12px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.card-top-btn {
+  width: 36px; height: 36px;
+  background: rgba(255,255,255,0.95);
+  border: none; cursor: pointer;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: all 0.2s;
+}
+.card-top-btn:hover { transform: scale(1.12); }
+.card-top-btn img { width: 18px; height: 18px; }
+.card-top-btn.liked { background: #ffeef2; }
+.card-top-btn.liked img { filter: invert(35%) sepia(80%) saturate(500%) hue-rotate(300deg); }
+
+.card-body { padding: 20px 22px 22px; }
+.card-name {
+  font-size: 14px; font-weight: 600;
+  color: var(--dark);
+  line-height: 1.5; margin-bottom: 8px;
+  min-height: 42px;
+}
+.card-rating {
+  display: flex; align-items: center; gap: 5px;
+  margin-bottom: 12px;
+}
+.stars { color: var(--rose); font-size: 13px; letter-spacing: 1px; }
+.review-count { color: var(--gray); font-size: 12px; }
+.card-price-row {
+  display: flex; align-items: center; justify-content: space-between;
+}
+.card-price {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px; font-weight: 700;
+  color: var(--deep);
+}
+.add-cart-btn {
+  width: 38px; height: 38px;
+  background: var(--deep);
+  border: none; cursor: pointer;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.add-cart-btn:hover { background: var(--rose); transform: scale(1.05); }
+.add-cart-btn img { width: 20px; filter: invert(1); }
+
+/* ===== DETAIL MODAL ===== */
+.modal-bg {
+  display: none; position: fixed; inset: 0; z-index: 2000;
+  background: rgba(45,31,36,0.6);
+  backdrop-filter: blur(6px);
+  align-items: center; justify-content: center;
+  padding: 20px;
+}
+.modal-bg.open { display: flex; }
+.modal {
+  background: var(--white);
+  border-radius: 24px;
+  max-width: 600px; width: 100%;
+  max-height: 90vh; overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+  animation: popIn 0.3s cubic-bezier(.34,1.56,.64,1);
+  position: relative;
+}
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.88) translateY(24px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+.modal-close {
+  position: absolute; top: 16px; right: 16px; z-index: 10;
+  width: 36px; height: 36px;
+  background: rgba(255,255,255,0.9);
+  border: none; cursor: pointer; border-radius: 50%;
+  font-size: 17px; font-weight: 700; color: var(--gray);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s;
+}
+.modal-close:hover { background: var(--deep); color: var(--white); }
+.modal-img-wrap {
+  height: 280px;
+  background: var(--soft);
+  border-radius: 24px 24px 0 0;
+  overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.modal-img-wrap img {
+  max-width: 70%; max-height: 240px;
+  object-fit: contain;
+}
+.modal-body { padding: 32px 36px 36px; }
+.modal-tag {
+  display: inline-block;
+  background: var(--blush); color: var(--rose);
+  font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase;
+  padding: 4px 14px; border-radius: 50px; margin-bottom: 14px;
+}
+.modal-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px; font-weight: 700;
+  color: var(--deep); line-height: 1.3; margin-bottom: 8px;
+}
+.modal-price {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 30px; font-weight: 700;
+  color: var(--rose); margin-bottom: 6px;
+}
+.modal-rating {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 20px;
+}
+.modal-divider {
+  height: 1px; background: var(--blush); margin-bottom: 20px;
+}
+.modal-desc {
+  color: #6e5b62; line-height: 1.85;
+  font-size: 15px; font-weight: 300;
+  margin-bottom: 28px;
+}
+.modal-features {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 10px; margin-bottom: 28px;
+}
+.feature-pill {
+  background: var(--soft);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 12px; font-weight: 500; color: var(--gray);
+  display: flex; align-items: center; gap: 6px;
+}
+.feature-pill::before { content: '✓'; color: var(--rose); font-weight: 700; }
+.modal-actions {
+  display: flex; gap: 12px; align-items: center;
+}
+.modal-qty {
+  display: flex; align-items: center;
+  background: var(--soft); border-radius: 12px;
+  overflow: hidden; border: 1.5px solid var(--blush);
+}
+.modal-qty button {
+  width: 40px; height: 48px;
+  background: none; border: none; cursor: pointer;
+  font-size: 18px; font-weight: 600; color: var(--gray);
+  transition: all 0.15s;
+}
+.modal-qty button:hover { background: var(--blush); color: var(--deep); }
+.modal-qty span {
+  width: 40px; text-align: center;
+  font-size: 16px; font-weight: 600; color: var(--deep);
+}
+.modal-cart-btn {
+  flex: 1; padding: 14px 20px;
+  background: var(--deep); color: var(--white);
+  border: none; cursor: pointer;
+  border-radius: 12px;
+  font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  transition: all 0.2s;
+}
+.modal-cart-btn:hover { background: var(--rose); }
+.modal-cart-btn img { width: 20px; filter: invert(1); }
+.modal-like-btn {
+  width: 50px; height: 50px;
+  background: var(--soft);
+  border: 1.5px solid var(--blush);
+  border-radius: 12px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.modal-like-btn img { width: 22px; }
+.modal-like-btn.liked { background: #ffeef2; border-color: var(--accent); }
+.modal-like-btn.liked img { filter: invert(35%) sepia(80%) saturate(500%) hue-rotate(300deg); }
+
+/* ===== CART PANEL ===== */
+.side-panel {
+  display: none; position: fixed;
+  top: 68px; right: 0; bottom: 0;
+  width: 420px;
+  background: var(--white);
+  z-index: 1500;
+  box-shadow: -8px 0 48px rgba(122,48,72,0.15);
+  flex-direction: column;
+}
+.side-panel.open {
+  display: flex;
+  animation: slideFromRight 0.3s ease;
+}
+@keyframes slideFromRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+.panel-header {
+  padding: 24px 28px 20px;
+  border-bottom: 1px solid var(--blush);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.panel-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px; font-weight: 700; color: var(--deep);
+  display: flex; align-items: center; gap: 10px;
+}
+.panel-close {
+  background: var(--soft); border: none; cursor: pointer;
+  width: 34px; height: 34px; border-radius: 50%;
+  font-size: 16px; color: var(--gray);
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.panel-close:hover { background: var(--deep); color: var(--white); }
+.panel-items { flex: 1; overflow-y: auto; padding: 20px 28px; }
+.panel-empty {
+  text-align: center; padding: 60px 20px; color: var(--gray);
+}
+.panel-empty img { width: 56px; opacity: 0.25; margin-bottom: 16px; display: block; margin: 0 auto 16px; }
+.panel-empty p { font-size: 15px; }
+
+.cart-item {
+  display: flex; gap: 14px; align-items: flex-start;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--blush);
+}
+.cart-item-img {
+  width: 72px; height: 72px;
+  border-radius: 14px; object-fit: contain;
+  background: var(--soft); flex-shrink: 0; padding: 4px;
+}
+.cart-item-info { flex: 1; min-width: 0; }
+.cart-item-name {
+  font-size: 13px; font-weight: 600;
+  color: var(--dark); margin-bottom: 4px;
+  line-height: 1.4;
+}
+.cart-item-price {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 17px; font-weight: 700; color: var(--rose); margin-bottom: 8px;
+}
+.qty-control {
+  display: flex; align-items: center; gap: 10px;
+}
+.qty-btn {
+  width: 28px; height: 28px;
+  background: var(--soft); border: 1px solid var(--blush);
+  border-radius: 8px; cursor: pointer;
+  font-size: 16px; font-weight: 700; color: var(--gray);
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.qty-btn:hover { background: var(--deep); color: var(--white); border-color: var(--deep); }
+.qty-num { font-size: 14px; font-weight: 600; color: var(--dark); min-width: 20px; text-align: center; }
+.trash-btn {
+  background: none; border: none; cursor: pointer; padding: 6px;
+  border-radius: 8px; transition: background 0.15s; flex-shrink: 0;
+}
+.trash-btn:hover { background: #ffeef2; }
+.trash-btn img { width: 20px; opacity: 0.5; }
+
+.panel-footer {
+  padding: 20px 28px 28px;
+  border-top: 1px solid var(--blush);
+}
+.cart-total-row {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 6px;
+}
+.cart-total-label { font-size: 14px; color: var(--gray); }
+.cart-total-amount {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px; font-weight: 700; color: var(--deep);
+}
+.cart-count-label { font-size: 12px; color: var(--gray); text-align: right; margin-bottom: 18px; }
+.checkout-btn {
+  width: 100%; padding: 16px;
+  background: linear-gradient(135deg, var(--deep), var(--rose));
+  color: var(--white); border: none; cursor: pointer;
+  border-radius: 14px;
+  font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: all 0.2s;
+  box-shadow: 0 6px 20px rgba(122,48,72,0.25);
+}
+.checkout-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(122,48,72,0.35); }
+
+/* ===== PAYMENT MODAL ===== */
+.pay-modal-bg {
+  display: none; position: fixed; inset: 0; z-index: 3000;
+  background: rgba(45,31,36,0.75);
+  backdrop-filter: blur(8px);
+  align-items: center; justify-content: center; padding: 20px;
+}
+.pay-modal-bg.open { display: flex; }
+.pay-modal {
+  background: var(--white);
+  border-radius: 24px;
+  width: 460px; max-width: 100%;
+  box-shadow: var(--shadow-lg);
+  animation: popIn 0.3s cubic-bezier(.34,1.56,.64,1);
+  overflow: hidden;
+}
+.pay-modal-header {
+  background: linear-gradient(135deg, var(--deep), #a04060);
+  padding: 28px 32px;
+  display: flex; align-items: center; gap: 14px;
+}
+.pay-modal-header h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px; font-weight: 700; color: var(--white);
+}
+.pay-modal-header span { font-size: 28px; }
+.pay-body { padding: 32px; }
+.pay-summary {
+  background: var(--soft); border-radius: 14px;
+  padding: 18px 22px; margin-bottom: 28px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.pay-summary-left div:first-child { font-size: 12px; color: var(--gray); font-weight: 500; margin-bottom: 4px; }
+.pay-total {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px; font-weight: 700; color: var(--rose);
+}
+.pay-items-count { font-size: 13px; color: var(--gray); }
+.pay-label {
+  font-size: 11px; font-weight: 600; color: var(--gray);
+  letter-spacing: 1.5px; text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.pay-input {
+  width: 100%; padding: 13px 16px;
+  background: var(--soft);
+  border: 1.5px solid var(--blush);
+  border-radius: 12px;
+  font-family: 'DM Sans', sans-serif; font-size: 15px;
+  color: var(--dark); margin-bottom: 20px; outline: none;
+  transition: border-color 0.2s;
+}
+.pay-input:focus { border-color: var(--rose); }
+.pay-row { display: flex; gap: 16px; }
+.pay-row > div { flex: 1; }
+.card-visual {
+  background: linear-gradient(135deg, var(--deep) 0%, #a04060 100%);
+  border-radius: 16px;
+  padding: 22px 24px;
+  margin-bottom: 24px;
+  color: var(--white);
+  position: relative;
+  overflow: hidden;
+}
+.card-visual::after {
+  content: '';
+  position: absolute;
+  width: 160px; height: 160px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.07);
+  top: -40px; right: -40px;
+}
+.card-chip {
+  width: 36px; height: 28px;
+  background: linear-gradient(135deg, #e8c878, #c8976a);
+  border-radius: 5px; margin-bottom: 20px;
+}
+.card-number { font-size: 18px; letter-spacing: 3px; margin-bottom: 16px; opacity: 0.9; }
+.card-info-row { display: flex; justify-content: space-between; font-size: 12px; opacity: 0.7; }
+.pay-confirm-btn {
+  width: 100%; padding: 16px;
+  background: linear-gradient(135deg, var(--deep), var(--rose));
+  color: var(--white); border: none; cursor: pointer;
+  border-radius: 14px;
+  font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 600;
+  transition: all 0.2s;
+  box-shadow: 0 6px 20px rgba(122,48,72,0.25);
+}
+.pay-confirm-btn:hover { transform: translateY(-2px); }
+.pay-cancel {
+  width: 100%; padding: 12px;
+  background: none; color: var(--gray);
+  border: none; cursor: pointer;
+  font-family: 'DM Sans', sans-serif; font-size: 14px;
+  margin-top: 8px; text-decoration: underline;
+}
+
+/* ===== SUCCESS MODAL ===== */
+.success-bg {
+  display: none; position: fixed; inset: 0; z-index: 4000;
+  background: rgba(45,31,36,0.85);
+  align-items: center; justify-content: center; padding: 20px;
+}
+.success-bg.open { display: flex; }
+.success-modal {
+  background: var(--white);
+  border-radius: 28px;
+  padding: 60px 48px;
+  text-align: center;
+  width: 420px; max-width: 100%;
+  box-shadow: var(--shadow-lg);
+  animation: popIn 0.35s cubic-bezier(.34,1.56,.64,1);
+}
+.success-icon {
+  width: 88px; height: 88px;
+  background: linear-gradient(135deg, #a8ddb8, #6daa7e);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 24px;
+  font-size: 40px;
+  box-shadow: 0 12px 32px rgba(109,170,126,0.3);
+}
+.success-modal h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 30px; font-weight: 700; color: var(--deep);
+  margin-bottom: 12px;
+}
+.success-modal p {
+  color: var(--gray); font-size: 15px; font-weight: 300;
+  line-height: 1.75; margin-bottom: 32px;
+}
+.success-modal p strong { color: var(--rose); font-weight: 600; }
+.success-btn {
+  padding: 14px 48px;
+  background: var(--deep); color: var(--white);
+  border: none; cursor: pointer;
+  border-radius: 50px;
+  font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600;
+  transition: all 0.2s;
+}
+.success-btn:hover { background: var(--rose); transform: translateY(-2px); }
+
+/* ===== TOAST ===== */
+.toast {
+  position: fixed; bottom: 32px; left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--dark); color: var(--white);
+  padding: 13px 28px;
+  border-radius: 50px;
+  font-size: 14px; font-weight: 500;
+  z-index: 9999; opacity: 0;
+  transition: all 0.35s cubic-bezier(.34,1.56,.64,1);
+  white-space: nowrap;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  pointer-events: none;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ===== FOOTER ===== */
+footer {
+  background: var(--deep);
+  color: rgba(255,255,255,0.45);
+  text-align: center;
+  padding: 40px 48px 32px;
+  font-size: 13px;
+  margin-top: 40px;
+}
+footer .footer-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px; font-weight: 700;
+  color: rgba(255,255,255,0.8);
+  margin-bottom: 12px;
+  letter-spacing: 2px;
+}
+footer p { margin-top: 8px; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 960px) {
+  .product-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  .section { padding: 48px 24px; }
+  header { padding: 0 24px; }
+  .hero-image-wrap { display: none; }
+  .hero-content { padding: 0 40px; }
+  .hero-text h1 { font-size: 42px; }
+}
+@media (max-width: 620px) {
+  .product-grid { grid-template-columns: 1fr; }
+  .side-panel { width: 100%; }
+  .header-center { display: none; }
+  .hero-text h1 { font-size: 34px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <a class="logo" href="#">
+    <div class="logo-dot"></div>
+    AURORA &amp; CO.
+  </a>
+  <div class="header-center">
+    <button onclick="filterProducts()"><img src="images/Shopicons_Regular_Search.png" alt="search"></button>
+    <input type="text" id="searchInput" placeholder="Search products..." oninput="filterProducts()">
+  </div>
+  <div id="creditDisplay" style="font-family:'DM Sans',sans-serif; display:flex; align-items:center; gap:8px; background:var(--blush); border:2px solid var(--accent); border-radius:12px; padding:8px 18px; margin-right:8px; transition:all 0.3s;">
+    💳 <div><div style="font-size:10px;font-weight:600;color:var(--gray);letter-spacing:1px;">CREDIT</div><span id="creditAmount" style="font-size:18px;font-weight:800;color:var(--deep);letter-spacing:-0.5px;">$100.00</span></div>
+  </div>
+  <div class="header-icons">
+    <button class="icon-btn" onclick="togglePanel('likesPanel')" title="Wishlist">
+      <img src="images/Shopicons_Regular_Heart.png" alt="wishlist">
+      <span class="badge" id="likesBadge">0</span>
+    </button>
+    <button class="icon-btn" onclick="togglePanel('cartPanel')" title="Cart">
+      <img src="images/Shopicons_Regular_Cart3.png" alt="cart">
+      <span class="badge" id="cartBadge">0</span>
+    </button>
+    <button class="icon-btn" title="Account">
+      <img src="images/Shopicons_Regular_Account.png" alt="account">
+    </button>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <img class="hero-bg-img" src="images/1-main image.png" alt="Aurora &amp; Co.">
+  <div class="hero-bg-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-text">
+      <div class="hero-tag">✦ Fall / Winter Collection</div>
+      <h1>The Foundation<br>of Your<br><em>Wardrobe</em></h1>
+      <p>Curated essentials for every occasion. Discover time-tested basics, refined textures, and unwavering comfort.</p>
+      <button class="hero-cta" onclick="document.querySelector('.section').scrollIntoView({behavior:'smooth'})">
+        Shop Essentials →
+      </button>
+      <div class="hero-stats">
+        <div class="stat-item"><div class="stat-num">18+</div><div class="stat-label">Styles</div></div>
+        <div class="stat-item"><div class="stat-num">4.9★</div><div class="stat-label">Avg Rating</div></div>
+        <div class="stat-item"><div class="stat-num">Free</div><div class="stat-label">Returns</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTS SECTION -->
+<section class="section">
+  <div class="section-header">
+    <div class="section-tag">✦ All Products</div>
+    <div class="section-title">Shop the Collection</div>
+    <div class="section-sub">Timeless basics crafted for everyday comfort and style</div>
+  </div>
+  <div class="filter-bar">
+    <span class="filter-label">Filter:</span>
+    <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+    <button class="filter-btn" onclick="setFilter('socks',this)">Socks</button>
+    <button class="filter-btn" onclick="setFilter('shirts',this)">T-Shirts &amp; Polos</button>
+  </div>
+  <div class="product-grid" id="productGrid"></div>
+</section>
+
+<!-- PRODUCT DETAIL MODAL -->
+<div class="modal-bg" id="productModal" onclick="handleModalBgClick(event)">
+  <div class="modal" id="modalBox">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-img-wrap">
+      <img id="modalImg" src="" alt="">
+    </div>
+    <div class="modal-body">
+      <div class="modal-tag" id="modalTag">Wardrobe Essential</div>
+      <div class="modal-name" id="modalName"></div>
+      <div class="modal-price" id="modalPrice"></div>
+      <div class="modal-rating" id="modalRating"></div>
+      <div class="modal-divider"></div>
+      <div class="modal-desc" id="modalDesc"></div>
+      <div class="modal-features" id="modalFeatures"></div>
+      <div class="modal-actions">
+        <div class="modal-qty">
+          <button onclick="changeModalQty(-1)">−</button>
+          <span id="modalQty">1</span>
+          <button onclick="changeModalQty(1)">+</button>
+        </div>
+        <button class="modal-cart-btn" onclick="addToCartFromModal()">
+          <img src="images/Shopicons_Regular_Cart4.png" alt="cart"> Add to Cart
+        </button>
+        <button class="modal-like-btn" id="modalLikeBtn" onclick="toggleLikeFromModal()">
+          <img src="images/Shopicons_Regular_Heart.png" alt="wishlist" id="modalHeartImg">
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CART PANEL -->
+<div class="side-panel" id="cartPanel">
+  <div class="panel-header">
+    <div class="panel-title">
+      <img src="images/Shopicons_Regular_Cart3.png" style="width:22px"> Shopping Cart
+    </div>
+    <button class="panel-close" onclick="togglePanel('cartPanel')">✕</button>
+  </div>
+  <div class="panel-items" id="cartItems"></div>
+  <div class="panel-footer" id="cartFooter" style="display:none">
+    <div class="cart-total-row">
+      <span class="cart-total-label">Total</span>
+      <span class="cart-total-amount" id="cartTotal">$0</span>
+    </div>
+    <div class="cart-count-label" id="cartCountLabel"></div>
+    <button class="checkout-btn" onclick="openPayment()">Checkout →</button>
+  </div>
+</div>
+
+<!-- LIKES PANEL -->
+<div class="side-panel" id="likesPanel">
+  <div class="panel-header">
+    <div class="panel-title">
+      <img src="images/Shopicons_Regular_Heart.png" style="width:22px"> Wishlist
+    </div>
+    <button class="panel-close" onclick="togglePanel('likesPanel')">✕</button>
+  </div>
+  <div class="panel-items" id="likesItems"></div>
+</div>
+
+<!-- PAYMENT MODAL -->
+<div class="pay-modal-bg" id="payModal">
+  <div class="pay-modal">
+    <div class="pay-modal-header">
+      <span>💳</span>
+      <h2>Secure Checkout</h2>
+    </div>
+    <div class="pay-body">
+      <div class="card-visual">
+        <div class="card-chip"></div>
+        <div class="card-number">4532 •••• •••• 7841</div>
+        <div class="card-info-row">
+          <div><div style="font-size:10px;margin-bottom:2px">CARDHOLDER</div>JANE DOE</div>
+          <div><div style="font-size:10px;margin-bottom:2px">EXPIRES</div>09 / 28</div>
+        </div>
+      </div>
+      <div class="pay-summary">
+        <div class="pay-summary-left">
+          <div>Order Total</div>
+          <div class="pay-total" id="payTotal">$0</div>
+        </div>
+        <div class="pay-items-count" id="payCount"></div>
+      </div>
+      <div class="pay-label">Card Number</div>
+      <input class="pay-input" value="4532 •••• •••• 7841" readonly>
+      <div class="pay-row">
+        <div>
+          <div class="pay-label">Expiry</div>
+          <input class="pay-input" value="09 / 28" readonly>
+        </div>
+        <div>
+          <div class="pay-label">CVV</div>
+          <input class="pay-input" value="•••" readonly>
+        </div>
+      </div>
+      <div class="pay-label">Cardholder Name</div>
+      <input class="pay-input" value="Jane Doe" readonly>
+      <button class="pay-confirm-btn" onclick="confirmPayment()">Confirm Payment ✓</button>
+      <button class="pay-cancel" onclick="closePayment()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- SUCCESS MODAL -->
+<div class="success-bg" id="successModal">
+  <div class="success-modal">
+    <div class="success-icon">✓</div>
+    <h2>Payment Complete!</h2>
+    <p>Your order has been successfully placed.<br>We'll prepare your items with care.<br><br><strong id="successDetails"></strong></p>
+    <button class="success-btn" onclick="closeSuccess()">Continue Shopping</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<!-- LOADING OVERLAY -->
+<div id="loadingOverlay" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(30,26,22,0.6); backdrop-filter:blur(4px); align-items:center; justify-content:center; flex-direction:column; gap:16px;">
+  <img src="images/loading.gif" style="width:80px; height:80px;">
+  <div id="loadingOverlayMsg" style="color:white; font-family:'DM Sans',sans-serif; font-size:15px; font-weight:500; letter-spacing:0.5px;">Loading...</div>
+</div>
+<!-- WELCOME GIF -->
+<div id="gifOverlay" style="display:none; position:fixed; inset:0; z-index:999999; background:rgba(0,0,0,0.65); align-items:center; justify-content:center;">
+  <img src="images/welcome_neutral.gif" style="width:700px; height:700px; object-fit:contain; border-radius:20px;">
+</div>
+
+<!-- INSUFFICIENT CREDIT MODAL -->
+<div id="insufficientModal" style="display:none; position:fixed; inset:0; z-index:5000; background:rgba(45,31,36,0.8); align-items:center; justify-content:center; padding:20px;">
+  <div style="background:white; border-radius:24px; padding:48px 40px; text-align:center; width:400px; max-width:95%; box-shadow:0 24px 80px rgba(0,0,0,0.3); animation:popIn 0.3s cubic-bezier(.34,1.56,.64,1);">
+    <div style="width:72px; height:72px; background:#ffeef2; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 20px; font-size:32px;">❌</div>
+    <div style="font-family:'Cormorant Garamond',serif; font-size:26px; font-weight:700; color:var(--deep); margin-bottom:12px;">Insufficient Credit</div>
+    <div style="color:var(--gray); font-size:14px; line-height:1.7; margin-bottom:8px;">
+      Your available credit is <strong style="color:var(--deep)" id="availableCredit"></strong>
+    </div>
+    <div style="color:var(--gray); font-size:14px; line-height:1.7; margin-bottom:28px;">
+      but this order requires <strong style="color:#c0392b" id="requiredCredit"></strong>
+    </div>
+    <button onclick="closeInsufficientModal()" style="padding:13px 40px; background:var(--deep); color:white; border:none; cursor:pointer; border-radius:50px; font-family:'DM Sans',sans-serif; font-size:15px; font-weight:600;">Go Back</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<footer>
+  <div class="footer-logo">AURORA &amp; CO.</div>
+  <p>Essential Wardrobe · Timeless Basics for Every Day</p>
+  <p style="margin-top:6px">Customer Care: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3b484e4b4b54494f7b5a4e4954495a5a555f585415585456">[email&#160;protected]</a></p>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+const PRODUCTS = [
+  { id:1,  name:"Basic Crew Socks — Charcoal",    price:6.99,  desc:"Comfortable everyday socks made with soft cotton blend fabric. Simple solid color design that pairs easily with any outfit.", category:"socks",  rating:4.7, reviews:312, features:["Soft and breathable","Comfortable stretch fit","Ideal for daily wear","Cotton blend fabric"] },
+  { id:2,  name:"Basic Crew Socks — Navy",         price:6.99,  desc:"Comfortable everyday socks made with soft cotton blend fabric. Simple solid color design that pairs easily with any outfit.", category:"socks",  rating:4.7, reviews:289, features:["Soft and breathable","Comfortable stretch fit","Ideal for daily wear","Cotton blend fabric"] },
+  { id:3,  name:"Essential Cotton Socks",          price:7.99,  desc:"Simple, comfortable socks made for everyday use. Soft cotton blend with a snug fit that stays in place.", category:"socks",  rating:4.8, reviews:198, features:["Soft and breathable fabric","Durable everyday design","Easy to match with any outfit","Snug fit"] },
+  { id:4,  name:"Classic Daily Socks — yellow",     price:5.49,  desc:"A clean and minimal sock designed for everyday comfort. Made with soft stretch fabric that keeps your feet comfortable all day.", category:"socks",  rating:4.6, reviews:144, features:["Lightweight and breathable","Flexible stretch fit","Perfect for casual wear","Minimal design"] },
+  { id:5,  name:"Classic Daily Socks — blue",     price:5.49,  desc:"A clean and minimal sock designed for everyday comfort. Made with soft stretch fabric that keeps your feet comfortable all day.", category:"socks",  rating:4.6, reviews:132, features:["Lightweight and breathable","Flexible stretch fit","Perfect for casual wear","Minimal design"] },
+  { id:6,  name:"Everyday Comfort Socks — Pink",   price:6.29,  desc:"A simple and comfortable sock designed for daily wear. Soft material and a flexible fit provide all-day comfort.", category:"socks",  rating:4.7, reviews:167, features:["Soft stretch fabric","Breathable and lightweight","Great for everyday outfits","Flexible fit"] },
+  { id:7,  name:"Everyday Comfort Socks — Green",  price:6.29,  desc:"A simple and comfortable sock designed for daily wear. Soft material and a flexible fit provide all-day comfort.", category:"socks",  rating:4.7, reviews:155, features:["Soft stretch fabric","Breathable and lightweight","Great for everyday outfits","Flexible fit"] },
+  { id:8,  name:"Everyday Comfort Socks — Yellow", price:6.29,  desc:"A simple and comfortable sock designed for daily wear. Soft material and a flexible fit provide all-day comfort.", category:"socks",  rating:4.6, reviews:143, features:["Soft stretch fabric","Breathable and lightweight","Great for everyday outfits","Flexible fit"] },
+  { id:9,  name:"Everyday Comfort Socks — Oat",    price:6.29,  desc:"A simple and comfortable sock designed for daily wear. Soft material and a flexible fit provide all-day comfort.", category:"socks",  rating:4.8, reviews:201, features:["Soft stretch fabric","Breathable and lightweight","Great for everyday outfits","Flexible fit"] },
+  { id:10, name:"Basic Cotton T-Shirt — White",    price:12.99, desc:"A simple and versatile T-shirt made from soft cotton fabric. Perfect for everyday wear and easy to style with any outfit.", category:"shirts", rating:4.8, reviews:521, features:["Soft and breathable material","Classic crewneck design","Comfortable regular fit","100% cotton"] },
+  { id:11, name:"Basic Cotton T-Shirt — Gray",     price:12.99, desc:"A simple and versatile T-shirt made from soft cotton fabric. Perfect for everyday wear and easy to style with any outfit.", category:"shirts", rating:4.8, reviews:489, features:["Soft and breathable material","Classic crewneck design","Comfortable regular fit","100% cotton"] },
+  { id:12, name:"Striped Cotton T-Shirt — Navy",          price:14.99, desc:"A casual striped T-shirt designed for everyday style and comfort. The classic stripe pattern adds a clean, modern look that pairs easily with jeans or shorts.", category:"shirts", rating:4.7, reviews:278, features:["Soft and breathable fabric","Classic striped design","Comfortable regular fit","Modern look"] },
+  { id:13, name:"Striped Cotton T-Shirt — Brown",          price:14.99, desc:"A casual striped T-shirt designed for everyday style and comfort. The classic stripe pattern adds a clean, modern look that pairs easily with jeans or shorts.", category:"shirts", rating:4.7, reviews:234, features:["Soft and breathable fabric","Classic striped design","Comfortable regular fit","Modern look"] },
+  { id:14, name:"Classic Polo — Stripe — Brown",         price:14.99, desc:"A casual striped T-shirt designed for everyday style and comfort. The classic stripe pattern adds a clean, modern look that pairs easily with jeans or shorts.", category:"shirts", rating:4.6, reviews:198, features:["Soft and breathable fabric","Classic striped design","Comfortable regular fit","Modern look"] },
+  { id:15, name:"Classic Polo — White",           price:16.99, desc:"A clean and timeless polo shirt designed for everyday style. Made with soft fabric and a comfortable fit, perfect for casual or smart-casual outfits.", category:"shirts", rating:4.8, reviews:312, features:["Soft and breathable material","Classic collar with button placket","Comfortable regular fit","Versatile style"] },
+  { id:16, name:"Classic Polo — Navy",            price:16.99, desc:"A clean and timeless polo shirt designed for everyday style. Made with soft fabric and a comfortable fit, perfect for casual or smart-casual outfits.", category:"shirts", rating:4.9, reviews:367, features:["Soft and breathable material","Classic collar with button placket","Comfortable regular fit","Versatile style"] },
+  { id:17, name:"Classic Polo — Oat",             price:16.99, desc:"A clean and timeless polo shirt designed for everyday style. Made with soft fabric and a comfortable fit, perfect for casual or smart-casual outfits.", category:"shirts", rating:4.8, reviews:289, features:["Soft and breathable material","Classic collar with button placket","Comfortable regular fit","Versatile style"] },
+  { id:18, name:"Classic Crewneck Sweatshirt",              price:20.99, desc:"A comfortable crewneck sweatshirt designed for everyday wear. Made with soft fabric and a relaxed fit for all-day comfort.", category:"shirts", rating:4.7, reviews:244, features:["Soft and cozy material","Classic crewneck design","Perfect for casual outfits"] },
+];
+
+const categoryTags = {
+  socks:  "Socks",
+  shirts: "T-Shirts & Polos",
+};
+let cart = [];
+let liked = new Set();
+let currentFilter = 'all';
+let currentModalId = null;
+let modalQty = 1;
+
+// ===== FILTER =====
+function setFilter(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderProducts();
+}
+
+function filterProducts() { renderProducts(); }
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    // 1. 챗봇 창 오픈
+    chatOpen = true;
+    chatGreeted = true;
+    document.getElementById('chatbotWindow').classList.add('open');
+
+    // 2. 인삿말 메시지 추가
+    setTimeout(() => {
+      addBotMessage("Hello! Welcome to Aurora Company. If you run into any issues while shopping, feel free to click the chatbot icon to call me anytime! 👋");
+      showQuickReplies(['Close for now', 'Start Shopping']);
+    }, 300);
+
+    // 3. gif 오버레이 표시
+    const gifOv = document.getElementById('gifOverlay');
+    gifOv.style.display = 'flex';
+
+    // 4. 3초 후 gif 사라짐
+    setTimeout(() => {
+      gifOv.style.display = 'none';
+    }, 8000);
+
+  }, 600);
+});
+
+function filterProducts() { renderProducts(); }
+
+// ===== RENDER PRODUCTS =====
+function renderProducts() {
+  const q = (document.getElementById('searchInput').value || '').toLowerCase();
+  const grid = document.getElementById('productGrid');
+  const list = PRODUCTS.filter(p => {
+    const matchFilter = currentFilter === 'all' || p.category === currentFilter;
+    const matchSearch = !q || p.name.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q);
+    return matchFilter && matchSearch;
+  });
+  if (list.length === 0) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--gray)">No products found. Try a different search.</div>';
+    return;
+  }
+  grid.innerHTML = list.map(p => cardHTML(p)).join('');
+}
+
+function cardHTML(p) {
+  const isLiked = liked.has(p.id);
+  const stars = starsHTML(p.rating);
+  return `
+  <div class="product-card" onclick="openModal(${p.id})">
+    <div class="card-img-wrap">
+      <img src="images/1-${p.id}.png" alt="${p.name}" loading="lazy">
+      <div class="card-overlay-actions">
+        <button class="overlay-btn" onclick="event.stopPropagation();addToCart(${p.id})">
+          <img src="images/Shopicons_Regular_Cart4.png" alt="cart"> Quick Add
+        </button>
+      </div>
+      <div class="card-top-actions">
+        <button class="card-top-btn ${isLiked ? 'liked' : ''}" onclick="event.stopPropagation();toggleLike(${p.id})" title="Wishlist">
+          <img src="images/Shopicons_Regular_Heart.png" alt="heart">
+        </button>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="card-name">${p.name}</div>
+      <div class="card-rating">
+        <span class="stars">${stars}</span>
+        <span class="review-count">(${p.reviews})</span>
+      </div>
+      <div class="card-price-row">
+        <div class="card-price">$${p.price}</div>
+        <button class="add-cart-btn" onclick="event.stopPropagation();addToCart(${p.id})" title="Add to cart">
+          <img src="images/Shopicons_Regular_Cart4.png" alt="cart">
+        </button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function starsHTML(rating) {
+  const full = Math.floor(rating);
+  const half = rating % 1 >= 0.5 ? 1 : 0;
+  const empty = 5 - full - half;
+  return '★'.repeat(full) + (half ? '½' : '') + '☆'.repeat(empty);
+}
+
+// ===== MODAL =====
+function openModal(id) {
+  const _p0 = PRODUCTS.find(x => x.id === id);
+  pushLog('PRODUCT_CLICK', 'Product: ' + (_p0 ? _p0.name : id) + ' | $' + (_p0 ? _p0.price : '?'));
+  function _doOpenModal() {
+    const p = PRODUCTS.find(x => x.id === id);
+    currentModalId = id;
+    modalQty = 1;
+    document.getElementById('modalQty').textContent = 1;
+    document.getElementById('modalImg').src = `images/1-${p.id}.png`;
+    document.getElementById('modalTag').textContent = categoryTags[p.category] || 'Product';
+    document.getElementById('modalName').textContent = p.name;
+    document.getElementById('modalPrice').textContent = `$${p.price}`;
+    document.getElementById('modalRating').innerHTML =
+      `<span class="stars" style="font-size:16px">${starsHTML(p.rating)}</span>
+       <strong>${p.rating}</strong>
+       <span style="color:var(--gray);font-size:13px">(${p.reviews} reviews)</span>`;
+    document.getElementById('modalDesc').textContent = p.desc;
+    document.getElementById('modalFeatures').innerHTML = p.features.map(f =>
+      `<div class="feature-pill">${f}</div>`).join('');
+    const lb = document.getElementById('modalLikeBtn');
+    lb.classList.toggle('liked', liked.has(id));
+    document.getElementById('productModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  _doOpenModal();
+}
+
+function closeModal() {
+  document.getElementById('productModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function handleModalBgClick(e) {
+  if (e.target === document.getElementById('productModal')) closeModal();
+}
+
+function changeModalQty(d) {
+  modalQty = Math.max(1, modalQty + d);
+  document.getElementById('modalQty').textContent = modalQty;
+}
+
+function addToCartFromModal() {
+  if (currentModalId) addToCart(currentModalId, modalQty);
+  closeModal();
+}
+
+function toggleLikeFromModal() {
+  if (currentModalId) toggleLike(currentModalId);
+  document.getElementById('modalLikeBtn').classList.toggle('liked', liked.has(currentModalId));
+}
+
+// ===== CART =====
+function addToCart(id, qty = 1) {
+  const p0 = PRODUCTS.find(x => x.id === id);
+  pushLog('CART_ADD', 'Product: ' + (p0 ? p0.name : id) + ' | Qty: ' + qty + ' | $' + (p0 ? p0.price : '?'));
+  const existing = cart.find(x => x.id === id);
+  if (existing) {
+    existing.qty += qty;
+    showToast('Quantity updated 🛒');
+  } else {
+    const p = PRODUCTS.find(x => x.id === id);
+    cart.push({ ...p, qty });
+    showToast('Added to cart 🛒');
+  }
+  updateCartBadge();
+  if (document.getElementById('cartPanel').classList.contains('open')) renderCart();
+}
+
+function updateCartBadge() {
+  const total = cart.reduce((s, x) => s + x.qty, 0);
+  const badge = document.getElementById('cartBadge');
+  badge.textContent = total;
+  badge.style.display = total > 0 ? 'flex' : 'none';
+}
+
+function renderCart() {
+  const el = document.getElementById('cartItems');
+  const footer = document.getElementById('cartFooter');
+  if (cart.length === 0) {
+    el.innerHTML = `<div class="panel-empty"><img src="images/Shopicons_Regular_Cart3.png" alt="empty"><p>Your cart is empty</p></div>`;
+    footer.style.display = 'none';
+    return;
+  }
+  footer.style.display = 'block';
+  el.innerHTML = cart.map(item => `
+    <div class="cart-item">
+      <img class="cart-item-img" src="images/1-${item.id}.png" alt="${item.name}">
+      <div class="cart-item-info">
+        <div class="cart-item-name">${item.name}</div>
+        <div class="cart-item-price">$${(item.price * item.qty).toFixed(2)}</div>
+        <div class="qty-control">
+          <button class="qty-btn" onclick="changeQty(${item.id},-1)">−</button>
+          <span class="qty-num">${item.qty}</span>
+          <button class="qty-btn" onclick="changeQty(${item.id},1)">+</button>
+        </div>
+      </div>
+      <button class="trash-btn" onclick="removeFromCart(${item.id})">
+        <img src="images/Shopicons_Regular_Trash.png" alt="remove">
+      </button>
+    </div>`).join('');
+  const total = cart.reduce((s, x) => s + x.price * x.qty, 0);
+  const count = cart.reduce((s, x) => s + x.qty, 0);
+  document.getElementById('cartTotal').textContent = `$${total.toFixed(2)}`; // 항상 정상금액
+  document.getElementById('cartCountLabel').textContent = `${count} item${count !== 1 ? 's' : ''}`;
+}
+
+function changeQty(id, d) {
+  const item = cart.find(x => x.id === id);
+  if (!item) return;
+  item.qty = Math.max(1, item.qty + d);
+  pushLog('CART_QTY_CHANGE', 'Product: ' + item.name + ' | Qty: ' + (item.qty - d) + ' → ' + item.qty + ' | Direction: ' + (d > 0 ? '+1' : '-1'));
+  updateCartBadge();
+  renderCart();
+}
+
+function removeFromCart(id) {
+  const p0 = cart.find(x => x.id === id);
+  pushLog('CART_REMOVE', 'Product: ' + (p0 ? p0.name : id) + ' | $' + (p0 ? (p0.price * p0.qty).toFixed(2) : '?'));
+  cart = cart.filter(x => x.id !== id);
+  updateCartBadge();
+  renderCart();
+  showToast('Item removed');
+}
+
+// ===== WISHLIST =====
+function toggleLike(id) {
+  const p0 = PRODUCTS.find(x => x.id === id);
+  if (liked.has(id)) {
+    liked.delete(id);
+    pushLog('WISHLIST_REMOVE', 'Product: ' + (p0 ? p0.name : id));
+    showToast('Removed from wishlist');
+  } else {
+    liked.add(id);
+    pushLog('WISHLIST_ADD', 'Product: ' + (p0 ? p0.name : id) + ' | $' + (p0 ? p0.price : '?'));
+    showToast('Added to wishlist ❤️');
+  }
+  updateLikesBadge();
+  renderProducts();
+  if (document.getElementById('likesPanel').classList.contains('open')) renderLikes();
+}
+
+function updateLikesBadge() {
+  const badge = document.getElementById('likesBadge');
+  badge.textContent = liked.size;
+  badge.style.display = liked.size > 0 ? 'flex' : 'none';
+}
+
+function renderLikes() {
+  const el = document.getElementById('likesItems');
+  if (liked.size === 0) {
+    el.innerHTML = `<div class="panel-empty"><img src="images/Shopicons_Regular_Heart.png" alt="empty"><p>Your wishlist is empty</p></div>`;
+    return;
+  }
+  const likedProds = PRODUCTS.filter(p => liked.has(p.id));
+  el.innerHTML = likedProds.map(p => `
+    <div class="cart-item">
+      <img class="cart-item-img" src="images/1-${p.id}.png" alt="${p.name}">
+      <div class="cart-item-info">
+        <div class="cart-item-name">${p.name}</div>
+        <div class="cart-item-price">$${p.price}</div>
+        <button class="add-cart-btn" style="margin-top:8px;width:auto;padding:8px 16px;border-radius:8px" onclick="addToCart(${p.id})">
+          <img src="images/Shopicons_Regular_Cart4.png" alt="cart"> Add to Cart
+        </button>
+      </div>
+      <button class="trash-btn" onclick="toggleLike(${p.id})">
+        <img src="images/Shopicons_Regular_Heart.png" alt="unlike" style="opacity:0.5">
+      </button>
+    </div>`).join('');
+}
+
+// ===== PANEL TOGGLE =====
+function togglePanel(panelId) {
+  function _doToggle() {
+    const panels = ['cartPanel', 'likesPanel'];
+    panels.forEach(id => {
+      if (id !== panelId) document.getElementById(id).classList.remove('open');
+    });
+    const panel = document.getElementById(panelId);
+    panel.classList.toggle('open');
+    if (panel.classList.contains('open')) {
+      if (panelId === 'cartPanel') {
+        pushLog('CART_OPEN', 'Cart opened | Items: ' + cart.reduce((s,x)=>s+x.qty,0) + ' | Total: $' + cart.reduce((s,x)=>s+x.price*x.qty,0).toFixed(2));
+        renderCart();
+      }
+      if (panelId === 'likesPanel') renderLikes();
+    }
+  }
+  if (ERROR_TYPE === 'delay' && panelId === 'cartPanel') {
+    errorFlag = true;
+
+    // 0초 → 로딩 오버레이 표시 후 메시지 설정
+    showLoadingOverlay('loading');
+    setTimeout(() => {
+      const lb = document.getElementById('loadingOverlayMsg');
+      if (lb) lb.innerHTML = `
+        <div style="text-align:center; line-height:1.8;">
+          <div style="font-size:16px; font-weight:600; margin-bottom:6px;">⏳ Please wait a moment...</div>
+          <div style="font-size:13px; color:rgba(255,255,255,0.75);">The server is taking longer than usual.<br>Please <strong style="color:#f39c12;">do not refresh</strong> the page.</div>
+        </div>`;
+    }, 50);
+
+    // 5초 후 챗봇 자동 등장 (오른쪽 하단, 로딩 위에)
+    setTimeout(() => {
+      document.getElementById('chatbotWindow').classList.add('delay-mode');
+      autoChatbotPopup();
+    }, 5000);
+
+  } else {
+    _doToggle();
+  }
+}
+
+// ===== PAYMENT =====
+function openPayment() {
+  const total = cart.reduce((s, x) => s + x.price * x.qty, 0);
+  const count = cart.reduce((s, x) => s + x.qty, 0);
+  pushLog('CHECKOUT_CLICK', 'Items: ' + count + ' | Total: $' + total.toFixed(2) + ' | Products: ' + cart.map(x=>x.name).join(', '));
+  document.getElementById('payTotal').textContent = `$${total.toFixed(2)}`;
+  document.getElementById('payCount').textContent = `${count} item${count !== 1 ? 's' : ''}`;
+  document.getElementById('payModal').classList.add('open');
+}
+
+function closePayment() { document.getElementById('payModal').classList.remove('open'); }
+
+function confirmPayment() {
+  const total = cart.reduce((s, x) => s + x.price * x.qty, 0);
+  const count = cart.reduce((s, x) => s + x.qty, 0);
+
+  // 결제 코드 생성
+  const payCode = generateCode();
+
+  // sumerror: 실제 차감은 x10 (마이너스 허용)
+  const charged = ERROR_TYPE === 'sumerror' ? total * 10 : total;
+  userCredit = userCredit - charged; // 마이너스 가능
+  updateCreditDisplay();
+
+  // 결제 완료 팝업 내용 업데이트
+  document.getElementById('successDetails').innerHTML = '';
+  document.getElementById('payModal').classList.remove('open');
+  document.getElementById('successModal').classList.add('open');
+
+  // success 팝업 안에 강조 금액 표시
+  const detailEl = document.getElementById('successDetails');
+  if (ERROR_TYPE === 'sumerror') {
+    // sumerror: 코드 없이 챗봇으로 넘김 (코드는 챗봇 마지막에 발급)
+    detailEl.innerHTML = `
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:8px;">
+        <div style="background:#f7f4f0;border-radius:12px;padding:12px 20px;text-align:center;">
+          <div style="font-size:11px;color:#8a857e;font-weight:600;letter-spacing:1px;margin-bottom:4px;">CHARGED</div>
+          <div style="font-size:22px;font-weight:800;color:#c0392b;">-$${charged.toFixed(2)}</div>
+        </div>
+        <div style="background:${userCredit < 0 ? '#ffeef2' : '#f7f4f0'};border:${userCredit < 0 ? '2px solid #e74c3c' : 'none'};border-radius:12px;padding:12px 20px;text-align:center;">
+          <div style="font-size:11px;color:#8a857e;font-weight:600;letter-spacing:1px;margin-bottom:4px;">REMAINING CREDIT</div>
+          <div style="font-size:22px;font-weight:800;color:${userCredit < 0 ? '#e74c3c' : '#2b2620'};">${userCredit < 0 ? '-$' + Math.abs(userCredit).toFixed(2) : '$' + userCredit.toFixed(2)}</div>
+        </div>
+      </div>`;
+    pushLog('PAYMENT_ATTEMPT', 'Code: ' + payCode + ' | ErrorType: sumerror | Charged: $' + charged.toFixed(2) + ' | Expected: $' + total.toFixed(2));
+  } else {
+    // 정상 + delay: 팝업에 코드번호 표시
+    detailEl.innerHTML = `
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:8px;">
+        <div style="background:#f7f4f0;border-radius:12px;padding:12px 20px;text-align:center;">
+          <div style="font-size:11px;color:#8a857e;font-weight:600;letter-spacing:1px;margin-bottom:4px;">CHARGED</div>
+          <div style="font-size:22px;font-weight:800;color:#c0392b;">-$${charged.toFixed(2)}</div>
+        </div>
+        <div style="background:${userCredit < 0 ? '#ffeef2' : '#f7f4f0'};border:${userCredit < 0 ? '2px solid #e74c3c' : 'none'};border-radius:12px;padding:12px 20px;text-align:center;">
+          <div style="font-size:11px;color:#8a857e;font-weight:600;letter-spacing:1px;margin-bottom:4px;">REMAINING CREDIT</div>
+          <div style="font-size:22px;font-weight:800;color:${userCredit < 0 ? '#e74c3c' : '#2b2620'};">${userCredit < 0 ? '-$' + Math.abs(userCredit).toFixed(2) : '$' + userCredit.toFixed(2)}</div>
+        </div>
+      </div>
+      <div style="margin-top:16px;background:linear-gradient(135deg,#2b2620,#5c5347);border-radius:14px;padding:14px 24px;display:inline-block;">
+        <div style="font-size:10px;color:rgba(255,255,255,0.7);font-weight:600;letter-spacing:2px;margin-bottom:4px;">ORDER CODE</div>
+        <div style="font-size:18px;font-weight:800;color:#ffffff;letter-spacing:2px;font-family:'Courier New',monospace;">${payCode}</div>
+      </div>
+      <div style="margin-top:14px;background:#fff8e1;border:2px solid #f39c12;border-radius:12px;padding:12px 20px;font-size:13px;font-weight:600;color:#b7770d;line-height:1.6;">
+        ⚠️ Please return to Prolific and enter this code.<br>You must record this code to complete the study.
+      </div>`;
+    pushLog('PAYMENT_SUCCESS', 'Code: ' + payCode + ' | ErrorType: ' + (window._savedErrorType || 'normal') + ' | Charged: $' + charged.toFixed(2) + ' | Items: ' + count + ' | Products: ' + cart.map(x=>x.name).join(', '));
+    window._normalPayCode = payCode;
+  }
+
+  // sumerror: 결제 후 챗봇 자동 팝업
+  if (ERROR_TYPE === 'sumerror') {
+    errorFlag = true;
+    window._pendingPayCode = payCode;  // 챗봇 마지막 메시지용
+    setTimeout(() => {
+      document.getElementById('successModal').classList.remove('open');
+      autoChatbotPopup();
+    }, 3000);
+  }
+}
+
+function showInsufficientModal(charged) {
+  document.getElementById('availableCredit').textContent = '$' + userCredit.toFixed(2);
+  document.getElementById('requiredCredit').textContent = '$' + charged.toFixed(2);
+  document.getElementById('insufficientModal').style.display = 'flex';
+}
+function closeInsufficientModal() {
+  document.getElementById('insufficientModal').style.display = 'none';
+}
+
+// 에러 감지 시 챗봇 자동 팝업
+function autoChatbotPopup(mode) {
+  window._savedErrorType = ERROR_TYPE;
+  pushLog('CHATBOT_AUTO_APPEAR', 'Chatbot auto-triggered | Mode=' + (mode || ERROR_TYPE));
+  // gif 오버레이 표시
+  const gifOv = document.getElementById('gifOverlay');
+  if (gifOv) {
+    gifOv.style.display = 'flex';
+    setTimeout(() => { gifOv.style.display = 'none'; }, 3000);
+  }
+  // 챗봇 창 오픈
+  chatOpen = true;
+  chatGreeted = true;
+  document.getElementById('chatbotWindow').classList.add('open');
+
+  if (mode === 'normal_complete') {
+    // 정상 결제 완료 후 인사
+    setTimeout(() => {
+      setAvatar('smile');
+      addBotMessage("🎉 Thank you for shopping with Aurora Company!");
+      setTimeout(() => {
+        addBotMessage("Hope you enjoyed your experience. Have a wonderful day! 😊");
+        setTimeout(() => {
+          const code = window._pendingNormalCode;
+          if (code) {
+            addBotMessage("📋 Your order code: " + code);
+            setTimeout(() => {
+              addBotMessage("⚠️ Please return to Prolific and enter this code. You must record this code to complete the study.");
+            }, 600);
+          }
+          setAvatar('neutral');
+        }, 800);
+      }, 800);
+    }, 500);
+  } else {
+    // 에러 감지 시
+    setTimeout(() => {
+      addBotMessage("⚠️ We've detected a potential issue with your recent transaction. What problem are you experiencing?");
+      showQuickReplies(['Sum error (wrong total)', 'Delay issue (slow loading)', 'No problem!']);
+    }, 500);
+  }
+}
+
+function closeSuccess() {
+  document.getElementById('successModal').classList.remove('open');
+  cart = [];
+  updateCartBadge();
+  renderCart();
+  document.getElementById('cartPanel').classList.remove('open');
+  // normal/delay 모드: 팝업 닫으면 챗봇 등장해서 인사
+  if (window._normalPayCode) {
+    window._pendingNormalCode = window._normalPayCode;
+    window._normalPayCode = null;
+    setTimeout(() => autoChatbotPopup('normal_complete'), 500);
+  }
+}
+
+// ===== TOAST =====
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ===== CREDIT SYSTEM =====
+let userCredit = 100.00;
+
+function updateCreditDisplay() {
+  const amt = document.getElementById('creditAmount');
+  const wrap = document.getElementById('creditDisplay');
+  amt.textContent = (userCredit < 0 ? '-$' : '$') + Math.abs(userCredit).toFixed(2);
+  if (userCredit < 0) {
+    wrap.style.background = '#ffeef2';
+    wrap.style.borderColor = '#e74c3c';
+    amt.style.color = '#e74c3c';
+  } else if (userCredit < 20) {
+    wrap.style.background = '#fff8e1';
+    wrap.style.borderColor = '#f39c12';
+    amt.style.color = '#e67e22';
+  } else {
+    wrap.style.background = 'var(--blush)';
+    wrap.style.borderColor = 'var(--accent)';
+    amt.style.color = 'var(--deep)';
+  }
+  wrap.style.transform = 'scale(1.1)';
+  setTimeout(() => { wrap.style.transform = 'scale(1)'; }, 350);
+}
+// ==========================
+
+// ===== INIT =====
+renderProducts();
+</script>
+
+<!-- ===== TRACKING SYSTEM ===== -->
+<script>
+// ── 구글 시트 설정 ──────────────────────────────────────────────
+const SHEET_ID = '1NakhDBZ0WEK4i0EGUVdkkf_gWPvY6BlYWOtHGkyGci8';
+const GAS_URL  = 'https://script.google.com/macros/s/AKfycbwGwEqBMVmy2Zkp6k46bodpOLVnGotwaQwSp6r4H8O9zes4PPxX-ZLHy_vbm5FeaFI/exec';
+// ─────────────────────────────────────────────────────────────────
+
+// ── 세션 초기화 ───────────────────────────────────────────────────
+const SESSION_START = Date.now();
+const SESSION_ID    = 'S' + SESSION_START + '_' + Math.random().toString(36).slice(2,7).toUpperCase();
+
+function elapsedSec() {
+  return ((Date.now() - SESSION_START) / 1000).toFixed(1);
+}
+function nowStr() {
+  return new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
+}
+
+// ── 로그 버퍼 ─────────────────────────────────────────────────────
+let logBuffer = [];
+
+function pushLog(type, detail) {
+  const entry = {
+    session : SESSION_ID,
+    time    : nowStr(),
+    elapsed : elapsedSec() + 's',
+    type    : type,
+    detail  : detail
+  };
+  logBuffer.push(entry);
+  sendLogToSheet(entry);
+}
+
+// ── 구글 시트 전송 (fetch no-cors) ───────────────────────────
+function sendLogToSheet(entry) {
+  const params = new URLSearchParams({
+    session : entry.session,
+    time    : entry.time,
+    elapsed : entry.elapsed,
+    type    : entry.type,
+    detail  : entry.detail
+  });
+  const url = GAS_URL + '?' + params.toString();
+  fetch(url, { method: 'GET', mode: 'no-cors' }).catch(function(){});
+}
+
+// ── 페이지 접속 로그 ─────────────────────────────────────────────
+window.addEventListener('load', function() {
+  pushLog('PAGE_ENTER', 'User accessed the site | ErrorType=' + (typeof ERROR_TYPE !== 'undefined' ? ERROR_TYPE : 'unknown'));
+});
+
+// ── 코드번호 생성 ─────────────────────────────────────────────────
+function generateCode() {
+  return 'AC-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).slice(2,6).toUpperCase();
+}
+</script>
+
+<!-- ===== CHATBOT STYLES ===== -->
+<style>
+.chatbot-fab {
+  position: fixed; bottom: 32px; right: 32px;
+  width: 60px; height: 60px;
+  background: linear-gradient(135deg, #2b2620, #5c5347);
+  border-radius: 50%; border: none; cursor: pointer;
+  box-shadow: 0 6px 24px rgba(43,38,32,0.4);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 9000; transition: transform 0.2s, box-shadow 0.2s;
+}
+.chatbot-fab:hover { transform: scale(1.1); }
+.chatbot-fab svg { width: 28px; height: 28px; fill: white; }
+.chatbot-window {
+  display: none; position: fixed;
+  top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 360px; height: 540px;
+  background: #ffffff; border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(43,38,32,0.2);
+  z-index: 99998; flex-direction: column; overflow: hidden;
+  animation: popIn 0.3s cubic-bezier(.34,1.56,.64,1);
+}
+.chatbot-window.open { display: flex; }
+.chatbot-window.delay-mode {
+  top: auto; left: auto; transform: none;
+  bottom: 32px; right: 104px;
+}
+.chatbot-avatar-area {
+  background: linear-gradient(135deg, #2b2620, #5c5347);
+  padding: 16px 20px 12px;
+  display: flex; align-items: center; gap: 12px;
+}
+.chatbot-video-wrap {
+  width: 80px; height: 80px; border-radius: 50%;
+  overflow: hidden; border: 2px solid rgba(255,255,255,0.4);
+  flex-shrink: 0; background: #000;
+}
+.chatbot-video-wrap video { width: 100%; height: 100%; object-fit: cover; }
+.chatbot-avatar-info { flex: 1; }
+.chatbot-name { font-family: "Cormorant Garamond", serif; font-size: 17px; font-weight: 700; color: white; }
+.chatbot-status { font-size: 12px; color: rgba(255,255,255,0.7); display: flex; align-items: center; gap: 5px; }
+.chatbot-status::before { content: ""; width: 7px; height: 7px; background: #6daa7e; border-radius: 50%; display: inline-block; }
+.chatbot-close {
+  background: rgba(255,255,255,0.15); border: none; cursor: pointer;
+  width: 30px; height: 30px; border-radius: 50%; color: white; font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+}
+.chatbot-close:hover { background: rgba(255,255,255,0.3); }
+.chatbot-messages {
+  flex: 1; overflow-y: auto; padding: 16px;
+  display: flex; flex-direction: column; gap: 10px;
+  background: #f7f4f0;
+}
+.msg { max-width: 80%; padding: 10px 14px; border-radius: 16px; font-size: 13px; line-height: 1.6; animation: msgIn 0.2s ease; }
+@keyframes msgIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+.msg.bot { background: white; color: #1e1a16; border-bottom-left-radius: 4px; box-shadow: 0 2px 12px rgba(43,38,32,0.08); align-self: flex-start; }
+.msg.user { background: linear-gradient(135deg, #2b2620, #5c5347); color: white; border-bottom-right-radius: 4px; align-self: flex-end; }
+.msg-typing { display: flex; gap: 4px; align-items: center; padding: 12px 16px; }
+.msg-typing span { width: 7px; height: 7px; background: #8a857e; border-radius: 50%; animation: bounce 1.2s infinite; }
+.msg-typing span:nth-child(2) { animation-delay: 0.2s; }
+.msg-typing span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes bounce { 0%,60%,100% { transform:translateY(0); } 30% { transform:translateY(-6px); } }
+.quick-replies { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 16px 10px; background: #f7f4f0; }
+.quick-btn {
+  padding: 6px 14px; background: white;
+  border: 1.5px solid rgba(92,83,71,0.3); border-radius: 50px;
+  font-family: "DM Sans", sans-serif; font-size: 12px; font-weight: 500;
+  color: #2b2620; cursor: pointer; transition: all 0.2s;
+}
+.quick-btn:hover { background: #2b2620; color: white; border-color: #2b2620; }
+.chatbot-input-area {
+  padding: 12px 16px; border-top: 1px solid #ede8e1;
+  display: flex; gap: 8px; align-items: center; background: white;
+}
+.chatbot-input {
+  flex: 1; background: #f7f4f0; border: 1.5px solid #ede8e1;
+  border-radius: 50px; padding: 9px 16px;
+  font-family: "DM Sans", sans-serif; font-size: 13px; color: #1e1a16; outline: none;
+}
+.chatbot-input:focus { border-color: #5c5347; }
+.chatbot-send {
+  width: 38px; height: 38px;
+  background: linear-gradient(135deg, #2b2620, #5c5347);
+  border: none; cursor: pointer; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+}
+.chatbot-send svg { width: 16px; height: 16px; fill: white; }
+</style>
+
+<!-- CHATBOT BUTTON -->
+<button class="chatbot-fab" onclick="toggleChatbot()" title="Chat with Aurora Assistant">
+  <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 10H6v-2h12v2zm0-3H6V7h12v2z"/></svg>
+</button>
+
+<!-- CHATBOT WINDOW -->
+<div class="chatbot-window" id="chatbotWindow">
+  <!-- WELCOME GIF OVERLAY (챗봇 창 위에 오버레이) -->
+  <div class="chatbot-avatar-area">
+    <div class="chatbot-video-wrap">
+      <video id="avatarVideo" autoplay loop muted playsinline>
+        <source src="videos/neutral.mp4" type="video/mp4">
+      </video>
+    </div>
+    <div class="chatbot-avatar-info">
+      <div class="chatbot-name">Aurora Assistant</div>
+      <div class="chatbot-status">Online</div>
+    </div>
+    <button class="chatbot-close" onclick="toggleChatbot()">✕</button>
+  </div>
+  <div class="chatbot-messages" id="chatMessages"></div>
+  <div class="quick-replies" id="quickReplies"></div>
+  <div class="chatbot-input-area">
+    <input class="chatbot-input" id="chatInput" type="text"
+      placeholder="Type a message..."
+      onkeydown="if(event.key==='Enter') sendMessage()">
+    <button class="chatbot-send" onclick="sendMessage()">
+      <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
+    </button>
+  </div>
+</div>
+
+<script>
+// ===== SMILE_CHAT TEST FLAG =====
+// true  → always smile.mp4
+// false → always neutral.mp4
+// ===== AVATAR 설정 =====
+// true  → 항상 smile.mp4 재생
+// false → 항상 neutral.mp4 재생
+const smile_chat = false; // ← 여기서 변경
+// =======================
+
+// ===== ERROR TYPE (랜덤 배정) =====
+// 'normal' | 'sumerror' | 'delay'
+// URL 파라미터로 버전 설정
+// ?c=nm  → 정상 (normal)
+// ?c=se  → 결제 금액 오류 (sum error)
+// ?c=dl  → 로딩 지연 (delay)
+const _p = new URLSearchParams(window.location.search);
+const _codeMap = { 'se': 'sumerror', 'dl': 'delay', 'nm': 'normal' };
+let ERROR_TYPE = _codeMap[_p.get('c')] || 'normal';
+// 콘솔 로그도 숨김 (실험 참가자 노출 방지)
+// console.log('[Aurora] ERROR_TYPE:', ERROR_TYPE);
+// ==================================
+
+// ===== LOADING OVERLAY HELPERS =====
+function showLoadingOverlay(msg) {
+  const ov = document.getElementById('loadingOverlay');
+  const lb = document.getElementById('loadingOverlayMsg');
+  if (lb) lb.textContent = msg || 'Loading...';
+  ov.style.display = 'flex';
+}
+function hideLoadingOverlay() {
+  document.getElementById('loadingOverlay').style.display = 'none';
+}
+// ====================================
+
+function setAvatar(emotion) {
+  const video = document.getElementById('avatarVideo');
+  const resolved = smile_chat ? 'smile' : 'neutral';
+  const src = 'videos/' + resolved + '.mp4';
+  if (!video.currentSrc || !video.currentSrc.includes(resolved)) {
+    video.src = src; video.load(); video.play();
+  }
+}
+
+let chatOpen = false, chatGreeted = false, errorHandled = false;
+
+function toggleChatbot() {
+  chatOpen = !chatOpen;
+  if (chatOpen) pushLog('CHATBOT_OPEN', 'User manually opened chatbot');
+  document.getElementById('chatbotWindow').classList.toggle('open', chatOpen);
+  if (chatOpen && !chatGreeted) {
+    chatGreeted = true;
+    setTimeout(() => {
+      // 에러 상태면 에러 대응 플로우
+      if (ERROR_TYPE !== 'normal' && !errorHandled) {
+        addBotMessage("Hi! 😟 It looks like you may have run into an issue. Are you experiencing a problem?");
+        showQuickReplies(['Delay issue (slow loading)', 'Sum error (wrong total)', 'No problem!']);
+      } else {
+        addBotMessage("Hi! 👋 I'm the Aurora & Co. Assistant. How can I help you today?");
+        setAvatar('smile');
+        showQuickReplies(['Socks', 'T-Shirts & Polos', 'Cart help', 'Shipping']);
+        setTimeout(() => setAvatar('neutral'), 2500);
+      }
+    }, 400);
+  }
+}
+
+function addBotMessage(text) {
+  const el = document.createElement('div');
+  el.className = 'msg bot'; el.textContent = text;
+  document.getElementById('chatMessages').appendChild(el);
+  scrollChat();
+}
+function addUserMessage(text) {
+  const el = document.createElement('div');
+  el.className = 'msg user'; el.textContent = text;
+  document.getElementById('chatMessages').appendChild(el);
+  scrollChat();
+}
+function addTyping() {
+  const el = document.createElement('div');
+  el.className = 'msg bot msg-typing'; el.id = 'typingIndicator';
+  el.innerHTML = '<span></span><span></span><span></span>';
+  document.getElementById('chatMessages').appendChild(el); scrollChat();
+}
+function removeTyping() { const el = document.getElementById('typingIndicator'); if (el) el.remove(); }
+function scrollChat() { const m = document.getElementById('chatMessages'); m.scrollTop = m.scrollHeight; }
+function showQuickReplies(options) {
+  document.getElementById('quickReplies').innerHTML = options.map(o =>
+    `<button class="quick-btn" onclick="handleQuick('${o}')">${o}</button>`).join('');
+}
+function clearQuickReplies() { document.getElementById('quickReplies').innerHTML = ''; }
+
+const responses = {
+  'socks': { text: "Our socks include Basic Crew, Essential Cotton, Classic Daily, and Everyday Comfort — available in charcoal, navy, pink, green, yellow, oat, and more! Prices from $5.49 to $7.99.", quick: ['T-Shirts & Polos', 'Cart help', 'Shipping'], emotion: 'smile' },
+  't-shirts & polos': { text: "We offer Basic Cotton T-Shirts ($12.99), Striped T-Shirts ($14.99), and Classic Polo Shirts ($16.99). Available in white, gray, navy, brown, stripe, and oat!", quick: ['Socks', 'Cart help', 'Payment'], emotion: 'smile' },
+  't-shirts': { text: "We offer Basic Cotton T-Shirts ($12.99), Striped T-Shirts ($14.99), and Classic Polo Shirts ($16.99). Available in white, gray, navy, brown, stripe, and oat!", quick: ['Socks', 'Cart help', 'Payment'], emotion: 'smile' },
+  'polo': { text: "Classic Polo Shirts come in Stripe, White, Navy, and Oat at $16.99. Soft fabric with a classic collar — great for casual or smart-casual wear!", quick: ['Socks', 'Cart help', 'Payment'], emotion: 'smile' },
+  'price': { text: "Socks start from $5.49, T-Shirts from $12.99, and Polo Shirts from $16.99. Great value for everyday essentials!", quick: ['Socks', 'T-Shirts & Polos', 'Cart help'], emotion: 'smile' },
+  'color': { text: "Socks come in charcoal, navy, white, beige, pink, green, yellow, and oat. T-shirts and polos are available in white, gray, navy, brown, stripe, and oat!", quick: ['Socks', 'T-Shirts & Polos', 'Cart help'], emotion: 'smile' },
+  'cart help': { text: "Click the cart icon on any product card to add it. You can adjust quantities or remove items in the cart panel on the right.", quick: ['Payment', 'Shipping', 'Socks'], emotion: 'neutral' },
+  'shipping': { text: "We offer free standard shipping on all orders! Delivery takes 3–5 business days. Express options available at checkout.", quick: ['Payment', 'Cart help', 'Socks'], emotion: 'smile' },
+  'payment': { text: "We accept all major credit cards. Your info is fully encrypted and secure. Click Checkout in your cart to proceed!", quick: ['Cart help', 'Shipping', 'Socks'], emotion: 'smile' },
+  'products': { text: "We carry Socks and T-Shirts & Polos — all crafted with soft, breathable fabrics for everyday comfort. What are you looking for?", quick: ['Socks', 'T-Shirts & Polos', 'Cart help'], emotion: 'smile' },
+};
+
+function getBotReply(input) {
+  const lower = input.toLowerCase().trim();
+  for (const key in responses) { if (lower.includes(key)) return responses[key]; }
+  return { text: "I'm here to help! Try asking about our socks, T-shirts & polos, cart, shipping, or payment. 😊", quick: ['Socks', 'T-Shirts & Polos', 'Cart help', 'Shipping'], emotion: 'neutral' };
+}
+
+function sendMessage() {
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim(); if (!text) return;
+  input.value = ''; clearQuickReplies(); addUserMessage(text);
+  addTyping(); setAvatar('neutral');
+  setTimeout(() => {
+    removeTyping();
+    const reply = getBotReply(text);
+    addBotMessage(reply.text); setAvatar(reply.emotion);
+    showQuickReplies(reply.quick);
+    setTimeout(() => setAvatar('neutral'), 2500);
+  }, 900);
+}
+
+function handleQuick(option) {
+
+  // ===== DELAY 에러 선택 =====
+  if (option === 'Delay issue (slow loading)') {
+    clearQuickReplies(); addUserMessage(option);
+    addTyping(); setAvatar('neutral');
+    setTimeout(() => {
+      removeTyping();
+      if (ERROR_TYPE === 'delay' || window._savedErrorType === 'delay') {
+        addBotMessage("Got it! Let me check the server... 🔍 Please wait a moment.");
+        addTyping();
+        setTimeout(() => {
+          removeTyping();
+          errorHandled = true;
+          ERROR_TYPE = 'normal';
+          window._savedErrorType = null;
+          errorFlag = false;
+          // delay-mode 클래스 제거 + 로딩 오버레이 닫고 카트 열기
+          document.getElementById('chatbotWindow').classList.remove('delay-mode');
+          hideLoadingOverlay();
+          const cartPanel = document.getElementById('cartPanel');
+          if (cartPanel) { cartPanel.classList.add('open'); renderCart(); }
+          addBotMessage("✅ Fixed! The server delay has been resolved. Everything should load normally now. Please proceed to checkout to complete your order!");
+          setAvatar('smile');
+          showQuickReplies(['Thanks!', 'Continue shopping']);
+          setTimeout(() => setAvatar('neutral'), 2500);
+        }, 3000);
+      } else {
+        addBotMessage("Hmm, I don't see a delay issue on my end. Could it be a different problem?");
+        setAvatar('neutral');
+        showQuickReplies(['Sum error (wrong total)', 'No problem!']);
+      }
+    }, 1000);
+    return;
+  }
+
+  // ===== SUM 에러 선택 =====
+  if (option === 'Sum error (wrong total)') {
+    clearQuickReplies(); addUserMessage(option);
+    addTyping(); setAvatar('neutral');
+    setTimeout(() => {
+      removeTyping();
+      if (ERROR_TYPE === 'sumerror') {
+        addBotMessage("I see — it looks like there may have been a billing discrepancy. I've flagged this for our technical team. 🔍");
+        addTyping();
+        setTimeout(() => {
+          removeTyping();
+          addBotMessage("Unfortunately, this type of issue typically takes 2–3 business days to fully review and resolve. We sincerely apologize for the inconvenience.");
+          setAvatar('neutral');
+          showQuickReplies(['Will I get a refund?', 'Okay, understood']);
+        }, 3000);
+      } else {
+        addBotMessage("I checked the billing system and everything looks correct on my end. The total seems accurate!");
+        setAvatar('neutral');
+        showQuickReplies(['Delay issue (slow loading)', 'No problem!']);
+      }
+    }, 1000);
+    return;
+  }
+
+  // ===== 환불 질문 =====
+  if (option === 'Will I get a refund?') {
+    clearQuickReplies(); addUserMessage(option);
+    addTyping();
+    setTimeout(() => {
+      removeTyping();
+      addBotMessage("Our team will review the transaction and process any necessary adjustments within 2–3 business days. You'll be notified via email once resolved.");
+      setAvatar('neutral');
+      showQuickReplies(['Okay, understood']);
+    }, 800);
+    return;
+  }
+
+  // ===== Check cart =====
+  if (option === 'Check cart now') {
+    clearQuickReplies(); addUserMessage(option);
+    addTyping();
+    setTimeout(() => {
+      removeTyping();
+      addBotMessage("Please open your cart and check if the total looks correct. Let me know if there's still an issue! 🛒");
+      showQuickReplies(['Looks good!', 'Still having issues']);
+    }, 600);
+    return;
+  }
+
+  if (option === 'Still having issues') {
+    clearQuickReplies(); addUserMessage(option);
+    addTyping();
+    setTimeout(() => {
+      removeTyping();
+      addBotMessage("I'm sorry! Please try refreshing the page. If the issue persists, contact us at support@auroraandco.com");
+      setAvatar('neutral');
+      showQuickReplies(['Socks', 'T-Shirts & Polos', 'Cart help']);
+    }, 600);
+    return;
+  }
+
+  // ===== 일반 닫기/감사 =====
+  if (['No problem!', 'Thanks!', 'Continue shopping', 'Close for now',
+       'Start Shopping', 'Looks good!', 'Okay, understood'].includes(option)) {
+    clearQuickReplies(); addUserMessage(option);
+    addTyping();
+    setTimeout(() => {
+      removeTyping();
+      // sumerror가 있었고 코드가 있으면 코드 발급
+      if (option === 'Okay, understood' && window._pendingPayCode) {
+        const code = window._pendingPayCode;
+        window._pendingPayCode = null;
+        pushLog('CHATBOT_ISSUE_RESOLVED', 'Issue: sumerror | Code: ' + code);
+        addBotMessage("Our team will follow up within 2–3 business days. Here is your case reference code:");
+        setTimeout(() => {
+          addBotMessage("📋 Case Code: " + code);
+          setTimeout(() => {
+            addBotMessage("⚠️ Please return to Prolific and enter this code. You must record this code to complete the study.");
+          }, 600);
+          setAvatar('neutral');
+          showQuickReplies(['Socks', 'T-Shirts & Polos', 'Cart help', 'Shipping']);
+        }, 500);
+      } else {
+        addBotMessage("Great! Let me know if you need anything. 😊");
+        setAvatar('smile');
+        showQuickReplies(['Socks', 'T-Shirts & Polos', 'Cart help', 'Shipping']);
+        setTimeout(() => setAvatar('neutral'), 2500);
+      }
+    }, 600);
+    return;
+  }
+
+  // ===== 일반 quick reply =====
+  clearQuickReplies(); addUserMessage(option);
+  addTyping(); setAvatar('neutral');
+  setTimeout(() => {
+    removeTyping();
+    const reply = getBotReply(option);
+    addBotMessage(reply.text); setAvatar(reply.emotion);
+    showQuickReplies(reply.quick);
+    setTimeout(() => setAvatar('neutral'), 2500);
+  }, 700);
+}
+
+// ===== WELCOME SEQUENCE =====
+window.onload = function() {
+  var gifOv = document.getElementById('gifOverlay');
+  if (gifOv) {
+    gifOv.style.display = 'flex';
+    setTimeout(function() { gifOv.style.display = 'none'; }, 5000);
+  }
+  setTimeout(function() {
+    chatOpen = true;
+    chatGreeted = true;
+    document.getElementById('chatbotWindow').classList.add('open');
+    setTimeout(function() {
+      addBotMessage("Hello! Welcome to Aurora Company. If you run into any issues while shopping, feel free to click the chatbot icon to call me anytime! 👋");
+      showQuickReplies(['Close for now', 'Start Shopping']);
+    }, 300);
+  }, 600);
+};
+</script>
+</body>
