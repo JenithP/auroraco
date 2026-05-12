@@ -1311,9 +1311,8 @@ function togglePanel(panelId) {
         </div>`;
     }, 50);
 
-    // 5초 후 챗봇 자동 등장 (오른쪽 하단, 로딩 위에)
+    // 5초 후 챗봇 자동 등장 (중앙, 다른 케이스와 동일)
     setTimeout(() => {
-      document.getElementById('chatbotWindow').classList.add('delay-mode');
       autoChatbotPopup();
     }, 5000);
 
@@ -1823,8 +1822,6 @@ function handleQuick(option) {
           ERROR_TYPE = 'normal';
           window._savedErrorType = null;
           errorFlag = false;
-          // delay-mode 클래스 제거 + 로딩 오버레이 닫고 카트 열기
-          document.getElementById('chatbotWindow').classList.remove('delay-mode');
           hideLoadingOverlay();
           const cartPanel = document.getElementById('cartPanel');
           if (cartPanel) { cartPanel.classList.add('open'); renderCart(); }
