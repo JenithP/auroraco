@@ -1388,7 +1388,9 @@ function confirmPayment() {
         ⚠️ Please return to Prolific and enter this code.<br>You must record this code to complete the study.
       </div>`;
     pushLog('PAYMENT_SUCCESS', 'Code: ' + payCode + ' | ErrorType: ' + (window._savedErrorType || 'normal') + ' | Charged: $' + charged.toFixed(2) + ' | Items: ' + count + ' | Products: ' + cart.map(x=>x.name).join(', '));
-    window._normalPayCode = payCode;
+    window._pendingNormalCode = payCode;
+    // normal/delay: 팝업 유지한 채 챗봇 바로 등장
+    setTimeout(() => autoChatbotPopup('normal_complete'), 1500);
   }
 
   // sumerror: 결제 후 챗봇 자동 팝업
@@ -1460,12 +1462,6 @@ function closeSuccess() {
   updateCartBadge();
   renderCart();
   document.getElementById('cartPanel').classList.remove('open');
-  // normal/delay 모드: 팝업 닫으면 챗봇 등장해서 인사
-  if (window._normalPayCode) {
-    window._pendingNormalCode = window._normalPayCode;
-    window._normalPayCode = null;
-    setTimeout(() => autoChatbotPopup('normal_complete'), 500);
-  }
 }
 
 // ===== TOAST =====
