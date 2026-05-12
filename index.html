@@ -1389,7 +1389,7 @@ function confirmPayment() {
     pushLog('PAYMENT_SUCCESS', 'Code: ' + payCode + ' | ErrorType: ' + (window._savedErrorType || 'normal') + ' | Charged: $' + charged.toFixed(2) + ' | Items: ' + count + ' | Products: ' + cart.map(x=>x.name).join(', '));
     window._pendingNormalCode = payCode;
     // normal만: 팝업 유지한 채 챗봇 바로 등장 (delay는 챗봇 이미 떠있음)
-    if ((window._savedErrorType || 'normal') === 'normal') {
+    if (ERROR_TYPE === 'normal') {
       setTimeout(() => autoChatbotPopup('normal_complete'), 1500);
     }
   }
