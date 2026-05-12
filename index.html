@@ -1299,6 +1299,7 @@ function togglePanel(panelId) {
   }
   if (ERROR_TYPE === 'delay' && panelId === 'cartPanel') {
     errorFlag = true;
+    window._wasDelay = true;  // 결제 시점에 delay 조건이었음을 기록
 
     // 0초 → 로딩 오버레이 표시 후 메시지 설정
     showLoadingOverlay('loading');
@@ -1388,8 +1389,8 @@ function confirmPayment() {
       </div>`;
     pushLog('PAYMENT_SUCCESS', 'Code: ' + payCode + ' | ErrorType: ' + (window._savedErrorType || 'normal') + ' | Charged: $' + charged.toFixed(2) + ' | Items: ' + count + ' | Products: ' + cart.map(x=>x.name).join(', '));
     window._pendingNormalCode = payCode;
-    // normal만: 팝업 유지한 채 챗봇 바로 등장 (delay는 챗봇 이미 떠있음)
-    if (ERROR_TYPE === 'normal') {
+    // normal만: 챗봇 등장. delay는 이미 챗봇 떠있었으므로 제외
+    if (!window._wasDelay) {
       setTimeout(() => autoChatbotPopup('normal_complete'), 1500);
     }
   }
