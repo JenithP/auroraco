@@ -1388,8 +1388,10 @@ function confirmPayment() {
       </div>`;
     pushLog('PAYMENT_SUCCESS', 'Code: ' + payCode + ' | ErrorType: ' + (window._savedErrorType || 'normal') + ' | Charged: $' + charged.toFixed(2) + ' | Items: ' + count + ' | Products: ' + cart.map(x=>x.name).join(', '));
     window._pendingNormalCode = payCode;
-    // normal/delay: 팝업 유지한 채 챗봇 바로 등장
-    setTimeout(() => autoChatbotPopup('normal_complete'), 1500);
+    // normal만: 팝업 유지한 채 챗봇 바로 등장 (delay는 챗봇 이미 떠있음)
+    if ((window._savedErrorType || 'normal') === 'normal') {
+      setTimeout(() => autoChatbotPopup('normal_complete'), 1500);
+    }
   }
 
   // sumerror: 결제 후 챗봇 자동 팝업
