@@ -2155,8 +2155,11 @@
       } else {
         // 에러 감지 시
         setTimeout(() => {
-          addBotMessage("⚠️ We've detected a potential issue with your recent transaction. What problem are you experiencing?");
-          showQuickReplies(['Sum error (wrong total)', 'Delay issue (slow loading)', 'No problem!']);
+          addBotMessage("Hello! Is there anything I can help you with?");
+          setTimeout(() => {
+            addBotMessage("⚠️ We've detected a potential issue with your recent transaction. What problem are you experiencing?");
+            showQuickReplies(['Sum error (wrong total)', 'Delay issue (slow loading)', 'No problem!']);
+          }, 800);
         }, 500);
       }
     }
