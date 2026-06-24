@@ -2600,8 +2600,8 @@
     const _p = new URLSearchParams(window.location.search);
     const _codeMap = { 'se': 'sumerror', 'dl': 'delay', 'nm': 'normal' };
     let ERROR_TYPE = _codeMap[_p.get('c')] || 'normal';
-    // 콘솔 로그도 숨김 (실험 참가자 노출 방지)
-    // console.log('[Aurora] ERROR_TYPE:', ERROR_TYPE);
+    // 진단용 로그 (참가자에겐 콘솔 열지 않으면 안 보임)
+    console.log('[Aurora] ERROR_TYPE:', ERROR_TYPE, '| raw c=', _p.get('c'), '| search=', window.location.search);
     // ==================================
 
     // ===== AVATAR TYPE (랜덤 배정 / URL 파라미터) =====
