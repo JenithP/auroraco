@@ -1643,8 +1643,7 @@
   <!-- WELCOME GIF -->
   <div id="gifOverlay"
     style="display:none; position:fixed; inset:0; z-index:999999; background:rgba(0,0,0,0.65); align-items:center; justify-content:center;">
-    <!-- <img src="images/welcome_neutral.gif" style="width:700px; height:700px; object-fit:contain; border-radius:20px;"> -->
-    <img src="images/welcome_empathic.gif" style="width:700px; height:700px; object-fit:contain; border-radius:20px;">
+    <img id="gifImg" src="images/welcome_neutral_new.gif" style="width:700px; height:700px; object-fit:contain; border-radius:20px;">
   </div>
 
   <!-- INSUFFICIENT CREDIT MODAL -->
@@ -1734,8 +1733,9 @@
           showQuickReplies(['Close for now', 'Start Shopping']);
         }, 300);
 
-        // 3. gif 오버레이 표시
+        // 3. gif 오버레이 표시 (첫 등장: welcome)
         const gifOv = document.getElementById('gifOverlay');
+        document.getElementById('gifImg').src = 'images/welcome_neutral_new.gif';
         gifOv.style.display = 'flex';
 
         // 4. 3초 후 gif 사라짐
@@ -2115,9 +2115,13 @@
     function autoChatbotPopup(mode) {
       window._savedErrorType = ERROR_TYPE;
       pushLog('CHATBOT_AUTO_APPEAR', 'Chatbot auto-triggered | Mode=' + (mode || ERROR_TYPE));
-      // gif 오버레이 표시
+      // gif 오버레이 표시 (두 번째 등장: 아바타 종류별 분기)
       const gifOv = document.getElementById('gifOverlay');
       if (gifOv) {
+        if (mode !== 'normal_complete') {
+          const gifImg = document.getElementById('gifImg');
+          if (gifImg) gifImg.src = 'images/' + _problemGifMap[AVATAR_TYPE] + '.gif';
+        }
         gifOv.style.display = 'flex';
         setTimeout(() => { gifOv.style.display = 'none'; }, 3000);
       }
@@ -2148,7 +2152,7 @@
       } else {
         // 에러 감지 시
         setTimeout(() => {
-          addBotMessage("⚠️ We've detected a potential issue with your recent transaction. What problem are you experiencing?");
+          addBotMessage("Hello! Is there anything I can help you with?");
           showQuickReplies(['Sum error (wrong total)', 'Delay issue (slow loading)', 'No problem!']);
         }, 500);
       }
@@ -2595,6 +2599,14 @@
     let ERROR_TYPE = _codeMap[_p.get('c')] || 'normal';
     // 콘솔 로그도 숨김 (실험 참가자 노출 방지)
     // console.log('[Aurora] ERROR_TYPE:', ERROR_TYPE);
+    // ==================================
+
+    // ===== AVATAR TYPE (랜덤 배정 / URL 파라미터) =====
+    // 두 번째 등장(문제 발생) 아바타 종류 분기
+    // ?a=ne → neutral  | ?a=sm → smile  | ?a=em → empathic
+    const _avatarMap = { 'ne': 'neutral', 'sm': 'smile', 'em': 'empathic' };
+    let AVATAR_TYPE = _avatarMap[_p.get('a')] || 'neutral';
+    const _problemGifMap = { neutral: 'neutral_problem', smile: 'smile_problem', empathic: 'empathic_problem' };
     // ==================================
 
     // ===== LOADING OVERLAY HELPERS =====
