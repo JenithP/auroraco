@@ -2122,6 +2122,7 @@
         if (mode !== 'normal_complete') {
           const gifImg = document.getElementById('gifImg');
           if (gifImg) gifImg.src = 'images/' + _problemGifMap[AVATAR_TYPE] + '.gif';
+          avatarVideoName = _avatarVideoMap[AVATAR_TYPE] || 'neutral_1'; // 프로필 비디오도 분기로 전환
         }
         gifOv.style.display = 'flex';
         setTimeout(() => { gifOv.style.display = 'none'; }, 3000);
@@ -2130,6 +2131,7 @@
       chatOpen = true;
       chatGreeted = true;
       document.getElementById('chatbotWindow').classList.add('open');
+      setAvatar(); // 분기 프로필 비디오 로드
 
       if (mode === 'normal_complete') {
         // 정상 결제 완료 후 인사
@@ -2557,7 +2559,7 @@
     <div class="chatbot-avatar-area">
       <div class="chatbot-video-wrap">
         <video id="avatarVideo" autoplay loop muted playsinline>
-          <source src="videos/neutral.mp4" type="video/mp4">
+          <source src="videos/neutral_1.mp4" type="video/mp4">
         </video>
       </div>
       <div class="chatbot-avatar-info">
@@ -2624,9 +2626,11 @@
     }
     // ====================================
 
+    // 현재 프로필 아바타 비디오 (welcome=neutral_1, 문제 발생 시 분기로 전환)
+    let avatarVideoName = 'neutral_1';
     function setAvatar(emotion) {
       const video = document.getElementById('avatarVideo');
-      const resolved = _avatarVideoMap[AVATAR_TYPE] || 'neutral_1';
+      const resolved = avatarVideoName;
       const src = 'videos/' + resolved + '.mp4';
       if (!video.currentSrc || !video.currentSrc.includes(resolved)) {
         video.src = src; video.load(); video.play();
@@ -2853,22 +2857,6 @@
       }, 700);
     }
 
-    // ===== WELCOME SEQUENCE =====
-    window.onload = function () {
-      var gifOv = document.getElementById('gifOverlay');
-      if (gifOv) {
-        gifOv.style.display = 'flex';
-        setTimeout(function () { gifOv.style.display = 'none'; }, 5000);
-      }
-      setTimeout(function () {
-        chatOpen = true;
-        chatGreeted = true;
-        document.getElementById('chatbotWindow').classList.add('open');
-        setTimeout(function () {
-          addBotMessage("Hello! Welcome to Aurora Company. If you run into any issues while shopping, feel free to click the chatbot icon to call me anytime! 👋");
-          showQuickReplies(['Close for now', 'Start Shopping']);
-        }, 300);
-      }, 600);
-    };
+    // (WELCOME SEQUENCE는 상단 load 핸들러로 통합 — 중복 제거)
   </script>
 </body>
