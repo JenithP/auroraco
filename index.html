@@ -2195,6 +2195,8 @@
     // ── 세션 초기화 ───────────────────────────────────────────────────
     const SESSION_START = Date.now();
     const SESSION_ID = 'S' + SESSION_START + '_' + Math.random().toString(36).slice(2, 7).toUpperCase();
+    // 사이트(아바타 변형) 구분값: ?a=sm | ?a=em | ?a=ne (기본 ne)
+    const SITE = (new URLSearchParams(window.location.search).get('a') || 'ne');
 
     function elapsedSec() {
       return ((Date.now() - SESSION_START) / 1000).toFixed(1);
@@ -2211,8 +2213,9 @@
         session: SESSION_ID,
         time: nowStr(),
         elapsed: elapsedSec() + 's',
+        site: SITE,
         type: type,
-        detail: detail
+        detail: '[' + SITE + '] ' + detail
       };
       logBuffer.push(entry);
       sendLogToSheet(entry);
@@ -2224,6 +2227,7 @@
         session: entry.session,
         time: entry.time,
         elapsed: entry.elapsed,
+        site: entry.site,
         type: entry.type,
         detail: entry.detail
       });
