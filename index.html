@@ -2061,9 +2061,12 @@
       </div>`;
         pushLog('PAYMENT_SUCCESS', 'Code: ' + payCode + ' | ErrorType: ' + (window._savedErrorType || 'normal') + ' | Charged: $' + charged.toFixed(2) + ' | Items: ' + count + ' | Products: ' + cart.map(x => x.name).join(', '));
         window._pendingNormalCode = payCode;
-        // normal만: 챗봇 등장. delay는 이미 챗봇 떠있었으므로 제외
+        // normal만: 챗봇 등장 (sumerror와 동일하게 5초 후 모달 닫고 등장). delay는 이미 챗봇 떠있었으므로 제외
         if (!window._wasDelay) {
-          setTimeout(() => autoChatbotPopup('normal_complete'), 1500);
+          setTimeout(() => {
+            document.getElementById('successModal').classList.remove('open');
+            autoChatbotPopup('normal_complete');
+          }, 5000);
         }
       }
 
@@ -2094,11 +2097,10 @@
       // gif 오버레이 표시 (두 번째 등장: 아바타 종류별 분기)
       const gifOv = document.getElementById('gifOverlay');
       if (gifOv) {
-        if (mode !== 'normal_complete') {
-          const gifImg = document.getElementById('gifImg');
-          if (gifImg) gifImg.src = 'images/' + _problemGifMap[AVATAR_TYPE] + '.gif';
-          avatarVideoName = _avatarVideoMap[AVATAR_TYPE] || 'neutral_1'; // 프로필 비디오도 분기로 전환
-        }
+        // 세 조건(normal / sumerror / delay) 모두 동일하게 아바타 3종으로 분기
+        const gifImg = document.getElementById('gifImg');
+        if (gifImg) gifImg.src = 'images/' + _secondGifMap[AVATAR_TYPE] + '.gif';
+        avatarVideoName = _avatarVideoMap[AVATAR_TYPE] || 'neutral_1'; // 프로필 비디오도 분기로 전환
         gifOv.style.display = 'flex';
         setTimeout(() => { gifOv.style.display = 'none'; }, 5000);
       }
@@ -2591,7 +2593,8 @@
     // ?a=ne → neutral  | ?a=sm → smile  | ?a=em → empathic
     const _avatarMap = { 'ne': 'neutral', 'sm': 'smile', 'em': 'empathic' };
     let AVATAR_TYPE = _avatarMap[_p.get('a')] || 'neutral';
-    const _problemGifMap = { neutral: 'neutral_problem', smile: 'smile_problem', empathic: 'empathic_problem' };
+    // 두 번째 등장 GIF (조건 무관 공통 — 파일만 교체하면 됨)
+    const _secondGifMap = { neutral: 'neutral_problem', smile: 'smile_problem', empathic: 'empathic_problem' };
     // 챗봇 프로필 아바타 비디오 (분기별)
     const _avatarVideoMap = { neutral: 'neutral_1', smile: 'smile_only', empathic: 'empathic' };
     // ==================================
