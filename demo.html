@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aurora &amp; Co. — Research Stimulus Suite</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --blush: #ede8e1;
+      --rose: #5c5347;
+      --deep: #2b2620;
+      --soft: #f7f4f0;
+      --cream: #f5f2ed;
+      --warm: #e8e0d4;
+      --gray: #8a857e;
+      --dark: #1e1a16;
+      --white: #ffffff;
+      --accent: #b5a898;
+      --gold: #c8a96e;
+      --success: #6daa7e;
+      --warn: #d99a3c;
+      --danger: #c0392b;
+      --shadow-sm: 0 2px 12px rgba(122, 48, 72, 0.08);
+      --shadow-md: 0 8px 32px rgba(122, 48, 72, 0.12);
+      --shadow-lg: 0 20px 60px rgba(122, 48, 72, 0.18);
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--dark);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ===== TOP BAR ===== */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(245, 242, 237, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--warm);
+    }
+
+    .topbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 68px;
+      gap: 20px;
+    }
+
+    .brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--deep);
+      line-height: 1.25;
+    }
+
+    .brand small {
+      display: block;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 2.4px;
+      text-transform: uppercase;
+      color: var(--gray);
+      margin-top: -2px;
+    }
+
+    .topnav {
+      display: flex;
+      gap: 26px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .topnav a {
+      color: var(--rose);
+      text-decoration: none;
+      padding-bottom: 2px;
+      border-bottom: 1px solid transparent;
+      transition: border-color .2s, color .2s;
+    }
+
+    .topnav a:hover {
+      color: var(--deep);
+      border-color: var(--gold);
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      padding: 84px 0 64px;
+      border-bottom: 1px solid var(--warm);
+    }
+
+    .eyebrow {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(36px, 5.6vw, 60px);
+      font-weight: 700;
+      line-height: 1.12;
+      color: var(--deep);
+      letter-spacing: -0.5px;
+      max-width: 16ch;
+    }
+
+    h1 em {
+      font-style: italic;
+      color: var(--rose);
+    }
+
+    .lede {
+      margin-top: 24px;
+      font-size: 17px;
+      color: var(--rose);
+      max-width: 62ch;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 32px;
+    }
+
+    .pill {
+      background: var(--white);
+      border: 1px solid var(--warm);
+      border-radius: 100px;
+      padding: 8px 18px;
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--rose);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .pill b {
+      color: var(--deep);
+      font-weight: 700;
+    }
+
+    /* ===== SECTIONS ===== */
+    section {
+      padding: 72px 0;
+      border-bottom: 1px solid var(--warm);
+    }
+
+    .sec-head {
+      max-width: 70ch;
+      margin-bottom: 40px;
+    }
+
+    .sec-num {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+
+    h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(28px, 3.4vw, 40px);
+      font-weight: 600;
+      color: var(--deep);
+      margin: 10px 0 14px;
+      letter-spacing: -0.3px;
+    }
+
+    .sec-head p {
+      color: var(--rose);
+      font-size: 15.5px;
+    }
+
+    h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--deep);
+      letter-spacing: -0.1px;
+    }
+
+    /* ===== CARD GRID ===== */
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--white);
+      border: 1px solid var(--warm);
+      border-radius: 18px;
+      padding: 26px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .card .k {
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      font-size: 14px;
+      color: var(--rose);
+      margin-top: 8px;
+    }
+
+    /* ===== AXIS BLOCKS ===== */
+    .axis+.axis {
+      margin-top: 44px;
+    }
+
+    .axis-label {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .axis-label h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    .axis-label span {
+      font-size: 12.5px;
+      color: var(--gray);
+    }
+
+    code {
+      font-family: 'Courier New', monospace;
+      font-size: 12.5px;
+      font-weight: 700;
+      background: var(--blush);
+      border-radius: 6px;
+      padding: 2px 7px;
+      color: var(--deep);
+    }
+
+    .cond {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      background: var(--white);
+      border: 1px solid var(--warm);
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      height: 100%;
+    }
+
+    .dot {
+      flex: 0 0 auto;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-top: 9px;
+    }
+
+    .dot.nm {
+      background: var(--success);
+    }
+
+    .dot.se {
+      background: var(--danger);
+    }
+
+    .dot.dl {
+      background: var(--warn);
+    }
+
+    .cond-body .tag {
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--gray);
+    }
+
+    .cond-body h3 {
+      margin: 2px 0 4px;
+    }
+
+    .cond-body ul {
+      margin: 12px 0 0 16px;
+      font-size: 13.5px;
+      color: var(--rose);
+    }
+
+    .cond-body li {
+      margin-bottom: 5px;
+    }
+
+    .avatar-card {
+      text-align: center;
+      background: var(--white);
+      border: 1px solid var(--warm);
+      border-radius: 18px;
+      padding: 26px 22px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .avatar-card video {
+      width: 112px;
+      height: 112px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: var(--blush);
+      border: 3px solid var(--blush);
+      margin-bottom: 14px;
+    }
+
+    .avatar-card p {
+      font-size: 13.5px;
+      color: var(--rose);
+      margin-top: 8px;
+    }
+
+    /* ===== MATRIX ===== */
+    .matrix {
+      display: grid;
+      grid-template-columns: 150px repeat(3, 1fr);
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .m-corner {
+      display: flex;
+      align-items: flex-end;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      color: var(--accent);
+      padding-bottom: 10px;
+      line-height: 1.4;
+    }
+
+    .m-colhead {
+      text-align: center;
+      padding-bottom: 10px;
+    }
+
+    .m-colhead b {
+      display: block;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 21px;
+      font-weight: 600;
+      color: var(--deep);
+    }
+
+    .m-colhead span {
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      color: var(--gray);
+      letter-spacing: 1px;
+    }
+
+    .m-rowhead {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-right: 6px;
+    }
+
+    .m-rowhead b {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--deep);
+      line-height: 1.2;
+    }
+
+    .m-rowhead span {
+      font-size: 11.5px;
+      color: var(--gray);
+    }
+
+    .cell {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: var(--white);
+      border: 1px solid var(--warm);
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: var(--shadow-sm);
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    }
+
+    .cell:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--accent);
+    }
+
+    .cell .cellcode {
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--gray);
+      letter-spacing: 0.5px;
+    }
+
+    .cell .celldesc {
+      font-size: 12.5px;
+      color: var(--rose);
+      flex: 1;
+    }
+
+    .cell-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .btn {
+      flex: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: var(--deep);
+      color: var(--white);
+      border: none;
+      border-radius: 100px;
+      padding: 9px 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12.5px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background .2s;
+    }
+
+    .btn:hover {
+      background: var(--rose);
+    }
+
+    .btn-ghost {
+      flex: 0 0 auto;
+      background: transparent;
+      color: var(--gray);
+      border: 1px solid var(--warm);
+      border-radius: 100px;
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: color .2s, border-color .2s;
+    }
+
+    .btn-ghost:hover {
+      color: var(--deep);
+      border-color: var(--accent);
+    }
+
+    /* ===== LOG TABLE ===== */
+    .logwrap {
+      background: var(--white);
+      border: 1px solid var(--warm);
+      border-radius: 18px;
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13.5px;
+    }
+
+    th {
+      text-align: left;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      color: var(--gray);
+      background: var(--soft);
+      padding: 13px 20px;
+      border-bottom: 1px solid var(--warm);
+    }
+
+    td {
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--blush);
+      color: var(--rose);
+      vertical-align: top;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    td.ev {
+      font-family: 'Courier New', monospace;
+      font-weight: 700;
+      color: var(--deep);
+    }
+
+    .note {
+      margin-top: 18px;
+      font-size: 13px;
+      color: var(--gray);
+      max-width: 78ch;
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      padding: 46px 0 64px;
+      color: var(--gray);
+      font-size: 12.5px;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 34px;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--deep);
+      color: var(--white);
+      font-size: 13px;
+      font-weight: 500;
+      padding: 11px 22px;
+      border-radius: 100px;
+      box-shadow: var(--shadow-lg);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s, transform .25s;
+      z-index: 99;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: 900px) {
+      .grid-3 {
+        grid-template-columns: 1fr;
+      }
+
+      .matrix {
+        grid-template-columns: 1fr;
+      }
+
+      .m-corner,
+      .m-colhead {
+        display: none;
+      }
+
+      .m-rowhead {
+        padding: 18px 0 2px;
+      }
+
+      .topnav {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="topbar">
+    <div class="wrap topbar-inner">
+      <div class="brand">Aurora &amp; Co.<small>Research Stimulus Suite</small></div>
+      <nav class="topnav">
+        <a href="#study">Study</a>
+        <a href="#design">Design</a>
+        <a href="#versions">9 Versions</a>
+        <a href="#data">Data</a>
+      </nav>
+    </div>
+  </div>
+
+  <header class="hero">
+    <div class="wrap">
+      <span class="eyebrow">Experimental platform · Live demo</span>
+      <h1>Nine shoppable worlds, <em>one controlled experiment</em></h1>
+      <p class="lede">
+        Aurora &amp; Co. is a fully functional e-commerce store, built from scratch as a research stimulus. Behind the
+        same storefront sit nine independently addressable versions — a 3 × 3 design that crosses <b>what goes wrong at
+          checkout</b> with <b>how the AI service avatar responds to it</b>. Every version is a real, clickable site
+        with identical products, pricing and layout, so any difference we measure comes from the manipulation alone.
+      </p>
+      <div class="hero-meta">
+        <span class="pill"><b>3</b> service-failure conditions</span>
+        <span class="pill"><b>3</b> avatar personas</span>
+        <span class="pill"><b>9</b> live versions</span>
+        <span class="pill"><b>17</b> tracked behavioural events</span>
+        <span class="pill">Between-subjects · URL-assigned</span>
+      </div>
+    </div>
+  </header>
+
+  <section id="study">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="sec-num">01 — The study</span>
+        <h2>What happens to trust when the service breaks?</h2>
+        <p>Participants arrive from an external survey panel, shop normally, and check out. At that moment the
+          experience either runs cleanly or fails in a controlled way — and an AI avatar steps in. We observe what they
+          do next.</p>
+      </div>
+      <div class="grid-3">
+        <div class="card">
+          <div class="k">Context</div>
+          <h3>A real shopping task</h3>
+          <p>Browse, wishlist, add to cart, adjust quantities, pay from a store credit balance. Nothing is mocked —
+            participants complete a genuine purchase task before anything unusual happens.</p>
+        </div>
+        <div class="card">
+          <div class="k">Manipulation</div>
+          <h3>A failure, then an avatar</h3>
+          <p>At checkout the site either works, stalls, or overcharges by 10×. In every case a video avatar appears and
+            opens a chat — the same script, three different emotional presentations.</p>
+        </div>
+        <div class="card">
+          <div class="k">Measurement</div>
+          <h3>Behaviour, not just self-report</h3>
+          <p>Every click, cart change, chatbot message and quick reply is timestamped and streamed to a research
+            spreadsheet, tagged with the version the participant was assigned to.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="design">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="sec-num">02 — The design</span>
+        <h2>Two independent axes, assigned by URL</h2>
+        <p>Condition assignment is carried in the link itself — <code>?c=</code> sets the failure type, <code>?a=</code>
+          sets the avatar. The panel provider randomises participants across the nine links, so no server-side
+          assignment logic is needed and every cell stays balanced.</p>
+      </div>
+
+      <div class="axis">
+        <div class="axis-label">
+          <h3>Axis A — Service failure</h3>
+          <span>parameter <code>?c=</code> · between-subjects</span>
+        </div>
+        <div class="grid-3">
+          <div class="cond">
+            <span class="dot nm"></span>
+            <div class="cond-body">
+              <span class="tag">c=nm</span>
+              <h3>No failure</h3>
+              <ul>
+                <li>Checkout completes correctly, order code issued</li>
+                <li>Avatar appears immediately after payment</li>
+                <li>Baseline for the avatar comparison</li>
+              </ul>
+            </div>
+          </div>
+          <div class="cond">
+            <span class="dot se"></span>
+            <div class="cond-body">
+              <span class="tag">c=se</span>
+              <h3>Billing error</h3>
+              <ul>
+                <li>The account is charged <b>10× the cart total</b>; credit can go negative</li>
+                <li>Avatar appears 5 s later and acknowledges the discrepancy</li>
+                <li>The chat ends <b>unresolved</b> — “2–3 business days to review”</li>
+              </ul>
+            </div>
+          </div>
+          <div class="cond">
+            <span class="dot dl"></span>
+            <div class="cond-body">
+              <span class="tag">c=dl</span>
+              <h3>System delay</h3>
+              <ul>
+                <li>The cart is blocked by a “please do not refresh” overlay</li>
+                <li>Avatar appears after 5 s and diagnoses the server</li>
+                <li>The chat <b>resolves</b> the failure; checkout then completes</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="axis">
+        <div class="axis-label">
+          <h3>Axis B — Avatar persona</h3>
+          <span>parameter <code>?a=</code> · identical dialogue, different delivery</span>
+        </div>
+        <div class="grid-3">
+          <div class="avatar-card">
+            <video src="videos/neutral_1.mp4" autoplay muted loop playsinline preload="metadata"></video>
+            <h3>Neutral</h3>
+            <p><code>a=ne</code><br>Composed, professional, low affect. The control persona.</p>
+          </div>
+          <div class="avatar-card">
+            <video src="videos/smile_only.mp4" autoplay muted loop playsinline preload="metadata"></video>
+            <h3>Smiling</h3>
+            <p><code>a=sm</code><br>Warm and positive throughout — including while delivering bad news.</p>
+          </div>
+          <div class="avatar-card">
+            <video src="videos/empathic.mp4" autoplay muted loop playsinline preload="metadata"></video>
+            <h3>Empathic</h3>
+            <p><code>a=em</code><br>Concerned, affect matched to the participant's situation.</p>
+          </div>
+        </div>
+        <p class="note">The opening welcome avatar is held constant across all nine versions. The persona manipulation
+          is introduced only at the moment of the service encounter — a full-screen avatar animation (5 s) followed by
+          the matching in-chat video profile — so first impressions cannot confound the recovery effect.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="versions">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="sec-num">03 — The versions</span>
+        <h2>All nine live sites</h2>
+        <p>Open any cell to experience exactly what a participant in that condition sees. Each link opens in a new tab
+          and behaves as a fresh session; use the copy button to share a single condition with a colleague.</p>
+      </div>
+      <div class="matrix" id="matrix"></div>
+      <p class="note">Note for reviewers: these are live instrumented builds — opening a version writes events to the
+        research log under its own session ID. Demo sessions are identifiable by session ID and are excluded from
+        analysis.</p>
+    </div>
+  </section>
+
+  <section id="data">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="sec-num">04 — The data</span>
+        <h2>What every session produces</h2>
+        <p>Each event is written in real time to a research spreadsheet with session ID, wall-clock time, elapsed
+          seconds since page entry, and the version tag — giving a complete, replayable behavioural trace per
+          participant.</p>
+      </div>
+      <div class="logwrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:36%">Event</th>
+              <th>Captured detail</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="ev">PAGE_ENTER</td>
+              <td>Session start and assigned failure condition</td>
+            </tr>
+            <tr>
+              <td class="ev">PRODUCT_CLICK</td>
+              <td>Product opened, with name and price</td>
+            </tr>
+            <tr>
+              <td class="ev">WISHLIST_ADD / _REMOVE</td>
+              <td>Wishlist changes</td>
+            </tr>
+            <tr>
+              <td class="ev">CART_ADD / _QTY_CHANGE / _REMOVE</td>
+              <td>Every basket composition change</td>
+            </tr>
+            <tr>
+              <td class="ev">CART_OPEN</td>
+              <td>Cart opened — flagged when blocked by the delay overlay</td>
+            </tr>
+            <tr>
+              <td class="ev">CHECKOUT_CLICK</td>
+              <td>Item count, total and full product list at checkout</td>
+            </tr>
+            <tr>
+              <td class="ev">PAYMENT_ATTEMPT</td>
+              <td>Billing-error condition: amount charged vs. amount expected</td>
+            </tr>
+            <tr>
+              <td class="ev">PAYMENT_SUCCESS</td>
+              <td>Order code, condition, amount, items purchased</td>
+            </tr>
+            <tr>
+              <td class="ev">CHATBOT_AUTO_APPEAR</td>
+              <td>Avatar intervention and the mode that triggered it</td>
+            </tr>
+            <tr>
+              <td class="ev">CHATBOT_OPEN</td>
+              <td>Participant opened the chat on their own initiative</td>
+            </tr>
+            <tr>
+              <td class="ev">CHATBOT_USER_MSG</td>
+              <td>Free-text messages typed by the participant</td>
+            </tr>
+            <tr>
+              <td class="ev">CHATBOT_BOT_MSG</td>
+              <td>Every line the avatar delivered</td>
+            </tr>
+            <tr>
+              <td class="ev">CHATBOT_QUICK_REPLY</td>
+              <td>Which suggested reply was chosen — the key diagnosis measure</td>
+            </tr>
+            <tr>
+              <td class="ev">CHATBOT_ISSUE_RESOLVED</td>
+              <td>Recovery completed (delay condition)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">Participants finish by returning to the survey platform with an order code generated in session,
+        which links the behavioural trace to their questionnaire responses.</p>
+    </div>
+  </section>
+
+  <footer class="wrap">
+    <span>Aurora &amp; Co. — experimental e-commerce stimulus. Products, prices and store credit are simulated for
+      research purposes.</span>
+    <span>Prepared for partner review</span>
+  </footer>
+
+  <div class="toast" id="toast">Link copied</div>
+
+  <script>
+    const CONDITIONS = [
+      {
+        code: 'nm', name: 'No failure', sub: 'c=nm · clean checkout',
+        cells: {
+          ne: 'Clean purchase, neutral avatar closes the sale. The baseline cell.',
+          sm: 'Clean purchase, smiling avatar — warmth with no failure to repair.',
+          em: 'Clean purchase, empathic avatar — tests empathy where nothing is wrong.'
+        }
+      },
+      {
+        code: 'se', name: 'Billing error', sub: 'c=se · 10× overcharge',
+        cells: {
+          ne: 'Overcharged, then told flatly it will take 2–3 days. Cold, unresolved failure.',
+          sm: 'Overcharged, delivered with a smile — affect mismatched to the situation.',
+          em: 'Overcharged, met with visible concern. Empathy without resolution.'
+        }
+      },
+      {
+        code: 'dl', name: 'System delay', sub: 'c=dl · blocked cart',
+        cells: {
+          ne: 'Delay resolved efficiently by a neutral avatar. Competence without warmth.',
+          sm: 'Delay resolved by a smiling avatar — positive affect plus a real fix.',
+          em: 'Delay resolved by an empathic avatar. Empathy plus resolution.'
+        }
+      }
+    ];
+
+    const AVATARS = [
+      { code: 'ne', name: 'Neutral', sub: 'a=ne' },
+      { code: 'sm', name: 'Smiling', sub: 'a=sm' },
+      { code: 'em', name: 'Empathic', sub: 'a=em' }
+    ];
+
+    function variantUrl(c, a) {
+      return new URL('index.html?c=' + c + '&a=' + a, window.location.href).href;
+    }
+
+    function buildMatrix() {
+      const m = document.getElementById('matrix');
+      let html = '<div class="m-corner">Failure &darr;<br>Avatar &rarr;</div>';
+      AVATARS.forEach(function (av) {
+        html += '<div class="m-colhead"><b>' + av.name + '</b><span>' + av.sub + '</span></div>';
+      });
+      CONDITIONS.forEach(function (cond) {
+        html += '<div class="m-rowhead"><b>' + cond.name + '</b><span>' + cond.sub + '</span></div>';
+        AVATARS.forEach(function (av) {
+          const url = variantUrl(cond.code, av.code);
+          html +=
+            '<div class="cell">' +
+            '<div class="cellcode">?c=' + cond.code + '&amp;a=' + av.code + '</div>' +
+            '<div class="celldesc">' + cond.cells[av.code] + '</div>' +
+            '<div class="cell-actions">' +
+            '<a class="btn" href="' + url + '" target="_blank" rel="noopener">Open version &rarr;</a>' +
+            '<button class="btn-ghost" title="Copy link" data-url="' + url + '">&#10697;</button>' +
+            '</div></div>';
+        });
+      });
+      m.innerHTML = html;
+      m.querySelectorAll('.btn-ghost').forEach(function (b) {
+        b.addEventListener('click', function () { copyLink(b.getAttribute('data-url')); });
+      });
+    }
+
+    function copyLink(url) {
+      const done = function () {
+        const t = document.getElementById('toast');
+        t.classList.add('show');
+        setTimeout(function () { t.classList.remove('show'); }, 1600);
+      };
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(url).then(done).catch(done);
+      } else {
+        const ta = document.createElement('textarea');
+        ta.value = url;
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); } catch (e) { }
+        document.body.removeChild(ta);
+        done();
+      }
+    }
+
+    buildMatrix();
+  </script>
+</body>
+
+</html>
