@@ -2196,9 +2196,12 @@
 
     // ── 세션 초기화 ───────────────────────────────────────────────────
     const SESSION_START = Date.now();
-    const SESSION_ID = 'S' + SESSION_START + '_' + Math.random().toString(36).slice(2, 7).toUpperCase();
-    // 사이트(아바타 변형) 구분값: ?a=sm | ?a=em | ?a=ne (기본 ne)
-    const SITE = (new URLSearchParams(window.location.search).get('a') || 'ne');
+    // 데모 세션 구분값: ?demo=1 이면 로그를 참가자 데이터와 분리해서 태깅
+    const _qs = new URLSearchParams(window.location.search);
+    const IS_DEMO = _qs.get('demo') === '1';
+    const SESSION_ID = (IS_DEMO ? 'DEMO_' : '') + 'S' + SESSION_START + '_' + Math.random().toString(36).slice(2, 7).toUpperCase();
+    // 사이트(아바타 변형) 구분값: ?a=sm | ?a=em | ?a=ne (기본 ne) — 데모는 demo- 접두사
+    const SITE = (IS_DEMO ? 'demo-' : '') + (_qs.get('a') || 'ne');
 
     function elapsedSec() {
       return ((Date.now() - SESSION_START) / 1000).toFixed(1);
