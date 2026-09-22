@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BLOOM — Socks & Fertility Store</title>
+  <title>Aurora &amp; Co. — Everyday Essentials</title>
   <link
     href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap"
     rel="stylesheet">
@@ -1438,7 +1438,7 @@
       AURORA &amp; CO.
     </a>
     <div class="header-center">
-      <button onclick="filterProducts()"><img src="images/Shopicons_Regular_Search.png" alt="search"></button>
+      <button onclick="filterProducts()"><img src="images/shopicons_regular_search.png" alt="search"></button>
       <input type="text" id="searchInput" placeholder="Search products..." oninput="filterProducts()">
     </div>
     <div id="creditDisplay"
@@ -1451,15 +1451,15 @@
     </div>
     <div class="header-icons">
       <button class="icon-btn" onclick="togglePanel('likesPanel')" title="Wishlist">
-        <img src="images/Shopicons_Regular_Heart.png" alt="wishlist">
+        <img src="images/shopicons_regular_heart.png" alt="wishlist">
         <span class="badge" id="likesBadge">0</span>
       </button>
       <button class="icon-btn" onclick="togglePanel('cartPanel')" title="Cart">
-        <img src="images/Shopicons_Regular_Cart3.png" alt="cart">
+        <img src="images/shopicons_regular_cart3.png" alt="cart">
         <span class="badge" id="cartBadge">0</span>
       </button>
       <button class="icon-btn" title="Account">
-        <img src="images/Shopicons_Regular_Account.png" alt="account">
+        <img src="images/shopicons_regular_account.png" alt="account">
       </button>
     </div>
   </header>
@@ -1508,10 +1508,10 @@
             <button onclick="changeModalQty(1)">+</button>
           </div>
           <button class="modal-cart-btn" onclick="addToCartFromModal()">
-            <img src="images/Shopicons_Regular_Cart4.png" alt="cart"> Add to Cart
+            <img src="images/shopicons_regular_cart4.png" alt="cart"> Add to Cart
           </button>
           <button class="modal-like-btn" id="modalLikeBtn" onclick="toggleLikeFromModal()">
-            <img src="images/Shopicons_Regular_Heart.png" alt="wishlist" id="modalHeartImg">
+            <img src="images/shopicons_regular_heart.png" alt="wishlist" id="modalHeartImg">
           </button>
         </div>
       </div>
@@ -1522,7 +1522,7 @@
   <div class="side-panel" id="cartPanel">
     <div class="panel-header">
       <div class="panel-title">
-        <img src="images/Shopicons_Regular_Cart3.png" style="width:22px"> Shopping Cart
+        <img src="images/shopicons_regular_cart3.png" style="width:22px"> Shopping Cart
       </div>
       <button class="panel-close" onclick="togglePanel('cartPanel')">✕</button>
     </div>
@@ -1541,7 +1541,7 @@
   <div class="side-panel" id="likesPanel">
     <div class="panel-header">
       <div class="panel-title">
-        <img src="images/Shopicons_Regular_Heart.png" style="width:22px"> Wishlist
+        <img src="images/shopicons_regular_heart.png" style="width:22px"> Wishlist
       </div>
       <button class="panel-close" onclick="togglePanel('likesPanel')">✕</button>
     </div>
@@ -1749,12 +1749,12 @@
       <img src="images/1-${p.id}.png" alt="${p.name}" loading="lazy">
       <div class="card-overlay-actions">
         <button class="overlay-btn" onclick="event.stopPropagation();addToCart(${p.id})">
-          <img src="images/Shopicons_Regular_Cart4.png" alt="cart"> Quick Add
+          <img src="images/shopicons_regular_cart4.png" alt="cart"> Quick Add
         </button>
       </div>
       <div class="card-top-actions">
         <button class="card-top-btn ${isLiked ? 'liked' : ''}" onclick="event.stopPropagation();toggleLike(${p.id})" title="Wishlist">
-          <img src="images/Shopicons_Regular_Heart.png" alt="heart">
+          <img src="images/shopicons_regular_heart.png" alt="heart">
         </button>
       </div>
     </div>
@@ -1767,7 +1767,7 @@
       <div class="card-price-row">
         <div class="card-price">$${p.price}</div>
         <button class="add-cart-btn" onclick="event.stopPropagation();addToCart(${p.id})" title="Add to cart">
-          <img src="images/Shopicons_Regular_Cart4.png" alt="cart">
+          <img src="images/shopicons_regular_cart4.png" alt="cart">
         </button>
       </div>
     </div>
@@ -1861,7 +1861,7 @@
       const el = document.getElementById('cartItems');
       const footer = document.getElementById('cartFooter');
       if (cart.length === 0) {
-        el.innerHTML = `<div class="panel-empty"><img src="images/Shopicons_Regular_Cart3.png" alt="empty"><p>Your cart is empty</p></div>`;
+        el.innerHTML = `<div class="panel-empty"><img src="images/shopicons_regular_cart3.png" alt="empty"><p>Your cart is empty</p></div>`;
         footer.style.display = 'none';
         return;
       }
@@ -1879,7 +1879,7 @@
         </div>
       </div>
       <button class="trash-btn" onclick="removeFromCart(${item.id})">
-        <img src="images/Shopicons_Regular_Trash.png" alt="remove">
+        <img src="images/shopicons_regular_trash.png" alt="remove">
       </button>
     </div>`).join('');
       const total = cart.reduce((s, x) => s + x.price * x.qty, 0);
@@ -1932,7 +1932,7 @@
     function renderLikes() {
       const el = document.getElementById('likesItems');
       if (liked.size === 0) {
-        el.innerHTML = `<div class="panel-empty"><img src="images/Shopicons_Regular_Heart.png" alt="empty"><p>Your wishlist is empty</p></div>`;
+        el.innerHTML = `<div class="panel-empty"><img src="images/shopicons_regular_heart.png" alt="empty"><p>Your wishlist is empty</p></div>`;
         return;
       }
       const likedProds = PRODUCTS.filter(p => liked.has(p.id));
@@ -1943,11 +1943,11 @@
         <div class="cart-item-name">${p.name}</div>
         <div class="cart-item-price">$${p.price}</div>
         <button class="add-cart-btn" style="margin-top:8px;width:auto;padding:8px 16px;border-radius:8px" onclick="addToCart(${p.id})">
-          <img src="images/Shopicons_Regular_Cart4.png" alt="cart"> Add to Cart
+          <img src="images/shopicons_regular_cart4.png" alt="cart"> Add to Cart
         </button>
       </div>
       <button class="trash-btn" onclick="toggleLike(${p.id})">
-        <img src="images/Shopicons_Regular_Heart.png" alt="unlike" style="opacity:0.5">
+        <img src="images/shopicons_regular_heart.png" alt="unlike" style="opacity:0.5">
       </button>
     </div>`).join('');
     }
