@@ -113,71 +113,14 @@
       border-color: var(--gold);
     }
 
-    /* ===== HERO ===== */
-    .hero {
-      padding: 84px 0 64px;
-      border-bottom: 1px solid var(--warm);
-    }
-
-    .eyebrow {
-      display: inline-block;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 20px;
-    }
-
-    h1 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(36px, 5.6vw, 60px);
-      font-weight: 700;
-      line-height: 1.12;
-      color: var(--deep);
-      letter-spacing: -0.5px;
-      max-width: 16ch;
-    }
-
-    h1 em {
-      font-style: italic;
-      color: var(--rose);
-    }
-
-    .lede {
-      margin-top: 24px;
-      font-size: 17px;
-      color: var(--rose);
-      max-width: 62ch;
-    }
-
-    .hero-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 32px;
-    }
-
-    .pill {
-      background: var(--white);
-      border: 1px solid var(--warm);
-      border-radius: 100px;
-      padding: 8px 18px;
-      font-size: 12.5px;
-      font-weight: 500;
-      color: var(--rose);
-      box-shadow: var(--shadow-sm);
-    }
-
-    .pill b {
-      color: var(--deep);
-      font-weight: 700;
-    }
-
     /* ===== SECTIONS ===== */
     section {
       padding: 72px 0;
       border-bottom: 1px solid var(--warm);
+    }
+
+    section:first-of-type {
+      padding-top: 84px;
     }
 
     .sec-head {
@@ -617,7 +560,6 @@
     <div class="wrap topbar-inner">
       <div class="brand">Aurora &amp; Co.<small>Research Stimulus Suite</small></div>
       <nav class="topnav">
-        <a href="#study">Study</a>
         <a href="#design">Design</a>
         <a href="#versions">9 Versions</a>
         <a href="#data">Data</a>
@@ -625,62 +567,10 @@
     </div>
   </div>
 
-  <header class="hero">
-    <div class="wrap">
-      <span class="eyebrow">Experimental platform · Live demo</span>
-      <h1>Nine shoppable worlds, <em>one controlled experiment</em></h1>
-      <p class="lede">
-        Aurora &amp; Co. is a fully functional e-commerce store, built from scratch as a research stimulus. Behind the
-        same storefront sit nine independently addressable versions — a 3 × 3 design that crosses <b>what goes wrong at
-          checkout</b> with <b>how the AI service avatar responds to it</b>. Every version is a real, clickable site
-        with identical products, pricing and layout, so any difference we measure comes from the manipulation alone.
-      </p>
-      <div class="hero-meta">
-        <span class="pill"><b>3</b> service-failure conditions</span>
-        <span class="pill"><b>3</b> avatar personas</span>
-        <span class="pill"><b>9</b> live versions</span>
-        <span class="pill"><b>17</b> tracked behavioural events</span>
-        <span class="pill">Between-subjects · URL-assigned</span>
-      </div>
-    </div>
-  </header>
-
-  <section id="study">
-    <div class="wrap">
-      <div class="sec-head">
-        <span class="sec-num">01 — The study</span>
-        <h2>What happens to trust when the service breaks?</h2>
-        <p>Participants arrive from an external survey panel, shop normally, and check out. At that moment the
-          experience either runs cleanly or fails in a controlled way — and an AI avatar steps in. We observe what they
-          do next.</p>
-      </div>
-      <div class="grid-3">
-        <div class="card">
-          <div class="k">Context</div>
-          <h3>A real shopping task</h3>
-          <p>Browse, wishlist, add to cart, adjust quantities, pay from a store credit balance. Nothing is mocked —
-            participants complete a genuine purchase task before anything unusual happens.</p>
-        </div>
-        <div class="card">
-          <div class="k">Manipulation</div>
-          <h3>A failure, then an avatar</h3>
-          <p>At checkout the site either works, stalls, or overcharges by 10×. In every case a video avatar appears and
-            opens a chat — the same script, three different emotional presentations.</p>
-        </div>
-        <div class="card">
-          <div class="k">Measurement</div>
-          <h3>Behaviour, not just self-report</h3>
-          <p>Every click, cart change, chatbot message and quick reply is timestamped and streamed to a research
-            spreadsheet, tagged with the version the participant was assigned to.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <section id="design">
     <div class="wrap">
       <div class="sec-head">
-        <span class="sec-num">02 — The design</span>
+        <span class="sec-num">01 — The design</span>
         <h2>Two independent axes, assigned by URL</h2>
         <p>Condition assignment is carried in the link itself — <code>?c=</code> sets the failure type, <code>?a=</code>
           sets the avatar. The panel provider randomises participants across the nine links, so no server-side
@@ -764,22 +654,23 @@
   <section id="versions">
     <div class="wrap">
       <div class="sec-head">
-        <span class="sec-num">03 — The versions</span>
+        <span class="sec-num">02 — The versions</span>
         <h2>All nine live sites</h2>
         <p>Open any cell to experience exactly what a participant in that condition sees. Each link opens in a new tab
           and behaves as a fresh session; use the copy button to share a single condition with a colleague.</p>
       </div>
       <div class="matrix" id="matrix"></div>
-      <p class="note">Note for reviewers: these are live instrumented builds — opening a version writes events to the
-        research log under its own session ID. Demo sessions are identifiable by session ID and are excluded from
-        analysis.</p>
+      <p class="note">Note for reviewers: these are live instrumented builds, so browsing them freely is expected and
+        costs nothing. Every version opened from this page carries a <code>demo=1</code> flag — its events are written
+        under a <code>DEMO_</code> session ID and a <code>demo-</code> version tag, kept separate from participant
+        data.</p>
     </div>
   </section>
 
   <section id="data">
     <div class="wrap">
       <div class="sec-head">
-        <span class="sec-num">04 — The data</span>
+        <span class="sec-num">03 — The data</span>
         <h2>What every session produces</h2>
         <p>Each event is written in real time to a research spreadsheet with session ID, wall-clock time, elapsed
           seconds since page entry, and the version tag — giving a complete, replayable behavioural trace per
@@ -900,8 +791,9 @@
       { code: 'em', name: 'Empathic', sub: 'a=em' }
     ];
 
+    // demo=1 : 이 페이지에서 연 세션은 참가자 데이터와 분리되도록 로그에 태깅된다
     function variantUrl(c, a) {
-      return new URL('index.html?c=' + c + '&a=' + a, window.location.href).href;
+      return new URL('index.html?c=' + c + '&a=' + a + '&demo=1', window.location.href).href;
     }
 
     function buildMatrix() {
