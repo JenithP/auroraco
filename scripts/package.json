@@ -1,0 +1,11 @@
+{
+  "name": "aurora-scripts",
+  "private": true,
+  "description": "Load test for the Aurora study site (kept out of the site root so Netlify does not install it)",
+  "scripts": {
+    "load-test": "node load_test.js"
+  },
+  "devDependencies": {
+    "playwright": "1.56.1"
+  }
+}

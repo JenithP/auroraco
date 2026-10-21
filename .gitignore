@@ -14,3 +14,6 @@ references/
 # Tooling
 node_modules/
 __pycache__/
+
+# Load test output
+scripts/loadtest_out/
