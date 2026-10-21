@@ -39,6 +39,47 @@ Firebase 데이터 구조:
 - `events`와 `beacon`에 같은 이벤트가 둘 다 있을 수 있으니 분석 시 `(pid, sessionId, seq)`로 중복을 제거한다.
 - 이벤트 타입 허용 목록은 `index.html`의 `ALLOWED_TYPES`와 `database.rules.json` 두 곳에 있다. 바꿀 때는 둘 다 바꾼다.
 
+## Qualtrics 연결 체크리스트 (사람이 할 일)
+
+9·10월 설문은 Prolific ID를 텍스트 문항(Q5 "What is your prolific ID?")으로 받았고, 쇼핑몰 링크에는 ID가 없었다. 이번부터는 URL로 자동 전달한다.
+
+- [ ] **Survey Flow 맨 위에 Embedded Data**로 `PROLIFIC_PID`, `STUDY_ID`, `SESSION_ID`를 추가한다(값은 비워 두면 Prolific 링크의 URL 파라미터에서 자동으로 채워진다).
+- [ ] Prolific 스터디 URL이 `?PROLIFIC_PID={{%PROLIFIC_PID%}}&STUDY_ID={{%STUDY_ID%}}&SESSION_ID={{%SESSION_ID%}}`를 포함하는지 확인한다.
+- [ ] Qualtrics에서 Aurora로 보내는 링크에 ID를 붙인다. 기존 조건 파라미터(`c`, `a`)는 그대로 둔다.
+  ```
+  https://auroraco.netlify.app/?c=se&a=sm&PROLIFIC_PID=${e://Field/PROLIFIC_PID}&STUDY_ID=${e://Field/STUDY_ID}&SESSION_ID=${e://Field/SESSION_ID}
+  ```
+- [ ] 미리보기로 링크를 열어 보고, Firebase `meta`의 `pidStatus`가 `valid`인지 확인한다(`missing`이면 Embedded Data가 비어 있는 것).
+- [ ] 주문 코드 입력 문항(조건별 Q54/Q89/Q95/Q66 등)에 **Validation → Custom → Matches Regex**를 건다.
+  ```
+  ^\s*(AC-)?M[A-Z0-9]{7}-[A-Z0-9]{4}\s*$
+  ```
+  > 코드 가운데 부분은 생성 시각(`Date.now()`의 36진수)이라 **2027년 2월 중순부터 첫 글자가 `M`에서 `N`으로 바뀐다.** 그 이후까지 수집한다면 `^\s*(AC-)?[A-Z0-9]{8}-[A-Z0-9]{4}\s*$`를 쓴다.
+- [ ] 기존 문항 **뒤에**(revenge·NWOM 문항보다 뒤, 기존 데이터와 비교할 수 있도록) 다음 문항을 추가한다. 척도는 기존 챗봇 문항과 같은 것을 쓴다.
+  - The chatbot did not seem to take my problem seriously.
+  - The chatbot's facial expression was inappropriate for the situation.
+  - The chatbot's expression seemed insincere.
+  - The chatbot seemed competent.
+- [ ] Q5(Prolific ID 텍스트 문항)는 비교를 위해 남겨 두되, 분석은 Embedded Data `PROLIFIC_PID`를 기준으로 한다.
+
+## 로그 내보내기·유실 검증
+
+```bash
+pip install -r requirements.txt
+export GOOGLE_APPLICATION_CREDENTIALS=~/.secrets/aurora-sa.json
+
+# 1) Firebase → CSV (이벤트 1행 = 1줄, events/beacon 중복 제거)
+python scripts/export_logs.py --study-key 2026-11_replication --out logs.csv
+
+# 2) 로그 CSV + Qualtrics 원본 CSV → 유실 지표
+python scripts/check_loss.py logs.csv --survey "qualtrics_export.csv"
+```
+
+- `export_logs.py`는 `--from-json`으로 Firebase 콘솔에서 받은 JSON 파일을 읽을 수도 있다(서비스 계정 키 없이).
+- `check_loss.py`는 Qualtrics 3줄 헤더 형식을 그대로 읽는다. Prolific ID 열은 `PROLIFIC_PID`(Embedded Data) → "prolific id" 문항 순으로, 주문 코드 열은 "enter the code" 문항 전체를 자동으로 찾는다. 다르면 `--pid-col`, `--code-col`(여러 번 가능)로 지정한다.
+- 설문 코드는 앞뒤 공백·소문자·`AC-` 누락을 바로잡은 뒤 비교한다.
+- `--survey` 없이 실행하면 로그 쪽 지표(seq 누락, `SESSION_END` 누락)만 본다. `--strict`를 주면 seq 누락이 하나라도 있을 때 종료 코드 1로 끝난다(부하 테스트용).
+
 ## 보안 규칙 배포 (사람이 할 일)
 
 규칙은 [`database.rules.json`](database.rules.json): 읽기 전부 금지, `events`/`beacon`에 새 항목 추가만 허용(수정·삭제 금지), 타입·길이·조건값 검증.
