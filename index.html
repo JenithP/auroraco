@@ -2194,14 +2194,40 @@
     const GAS_URL = 'https://script.google.com/macros/s/AKfycbwGwEqBMVmy2Zkp6k46bodpOLVnGotwaQwSp6r4H8O9zes4PPxX-ZLHy_vbm5FeaFI/exec';
     // ─────────────────────────────────────────────────────────────────
 
+    // ── sessionStorage 헬퍼 (접근이 막힌 브라우저에서도 화면은 그대로 진행) ──
+    function _ssGet(k) { try { return sessionStorage.getItem(k); } catch (e) { return null; } }
+    function _ssSet(k, v) { try { sessionStorage.setItem(k, v); } catch (e) { } }
+
     // ── 세션 초기화 ───────────────────────────────────────────────────
-    const SESSION_START = Date.now();
     // 데모 세션 구분값: ?demo=1 이면 로그를 참가자 데이터와 분리해서 태깅
     const _qs = new URLSearchParams(window.location.search);
     const IS_DEMO = _qs.get('demo') === '1';
-    const SESSION_ID = (IS_DEMO ? 'DEMO_' : '') + 'S' + SESSION_START + '_' + Math.random().toString(36).slice(2, 7).toUpperCase();
+    // 새로고침해도 같은 세션 ID·시작 시각을 유지 (탭을 닫으면 초기화)
+    const SESSION_START = Number(_ssGet('aurora_session_start')) || Date.now();
+    const SESSION_ID = _ssGet('aurora_session_id') ||
+      ((IS_DEMO ? 'DEMO_' : '') + 'S' + SESSION_START + '_' + Math.random().toString(36).slice(2, 7).toUpperCase());
+    _ssSet('aurora_session_start', String(SESSION_START));
+    _ssSet('aurora_session_id', SESSION_ID);
     // 사이트(아바타 변형) 구분값: ?a=sm | ?a=em | ?a=ne (기본 ne) — 데모는 demo- 접두사
     const SITE = (IS_DEMO ? 'demo-' : '') + (_qs.get('a') || 'ne');
+
+    // ── Prolific ID ──────────────────────────────────────────────────
+    // ?PROLIFIC_PID=...&STUDY_ID=...&SESSION_ID=... 로 들어온 값을 우선 쓰고,
+    // URL에 없으면(새로고침·내부 이동) sessionStorage에 저장해 둔 값을 쓴다.
+    function _paramOrStored(param, key) {
+      const v = (_qs.get(param) || '').trim();
+      if (v) { _ssSet(key, v); return v; }
+      return _ssGet(key) || '';
+    }
+    const PID_RAW = _paramOrStored('PROLIFIC_PID', 'aurora_pid');
+    const STUDY_ID = _paramOrStored('STUDY_ID', 'aurora_study_id');
+    const PROLIFIC_SESSION_ID = _paramOrStored('SESSION_ID', 'aurora_prolific_session_id');
+    // missing | valid | invalid — 형식이 다르면 원문은 PID_RAW로 함께 기록
+    const PID_STATUS = !PID_RAW ? 'missing' : (/^[a-f0-9]{24}$/i.test(PID_RAW) ? 'valid' : 'invalid');
+    // Firebase 경로 키로도 쓰이므로 . # $ [ ] / 등은 _로 바꾸고 64자로 자른다
+    const PID = PID_STATUS === 'missing'
+      ? 'NO_PID_' + SESSION_ID
+      : (PID_STATUS === 'valid' ? PID_RAW.toLowerCase() : PID_RAW.replace(/[^A-Za-z0-9_-]/g, '_').slice(0, 64));
 
     function elapsedSec() {
       return ((Date.now() - SESSION_START) / 1000).toFixed(1);
@@ -2225,9 +2251,12 @@
         time: nowStr(),
         elapsed: elapsedSec() + 's',
         site: SITE,
+        pid: PID,
+        studyId: STUDY_ID,
         type: type,
         detail: '[' + SITE + '] ' + detail
       };
+      if (PID_STATUS === 'invalid') entry.pid_raw = PID_RAW;
       logBuffer.push(entry);
       sendLogToSheet(entry);
     }
@@ -2239,16 +2268,20 @@
         time: entry.time,
         elapsed: entry.elapsed,
         site: entry.site,
+        pid: entry.pid,
+        studyId: entry.studyId,
         type: entry.type,
         detail: entry.detail
       });
+      if (entry.pid_raw) params.set('pid_raw', entry.pid_raw);
       const url = GAS_URL + '?' + params.toString();
       fetch(url, { method: 'GET', mode: 'no-cors' }).catch(function () { });
     }
 
     // ── 페이지 접속 로그 ─────────────────────────────────────────────
     window.addEventListener('load', function () {
-      pushLog('PAGE_ENTER', 'User accessed the site | ErrorType=' + (typeof ERROR_TYPE !== 'undefined' ? ERROR_TYPE : 'unknown'));
+      pushLog('PAGE_ENTER', 'User accessed the site | ErrorType=' + (typeof ERROR_TYPE !== 'undefined' ? ERROR_TYPE : 'unknown') +
+        ' | PID=' + PID_STATUS + (PID_STATUS === 'invalid' ? ' (raw: ' + _logText(PID_RAW) + ')' : ''));
     });
 
     // ── 코드번호 생성 ─────────────────────────────────────────────────

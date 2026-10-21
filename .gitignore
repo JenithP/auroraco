@@ -1,0 +1,16 @@
+# Firebase / Google service account keys — never commit
+*service-account*.json
+*serviceAccount*.json
+*-firebase-adminsdk-*.json
+
+# Local env files
+.env
+.env.*
+
+# Participant data and local reference material
+results/
+references/
+
+# Tooling
+node_modules/
+__pycache__/
