@@ -2222,8 +2222,8 @@
     }
     // 새로고침해도 같은 세션 ID·시작 시각을 유지 (탭을 닫으면 초기화)
     const SESSION_START = Number(_ssGet('aurora_session_start')) || Date.now();
-    // 부하 테스트(?sk=loadtest_YYYYMMDD) 세션은 LT_ 접두사 — Apps Script 시트에서도 실험 데이터와 구분되도록
-    const IS_LOADTEST = /^loadtest_\d{8}$/.test(_qs.get('sk') || '');
+    // 부하 테스트(?sk=loadtest_YYYYMMDD 또는 loadtest_YYYYMMDD_run2) 세션은 LT_ 접두사 — Apps Script 시트에서도 실험 데이터와 구분되도록
+    const IS_LOADTEST = /^loadtest_\d{8}(_[a-z0-9]{1,16})?$/.test(_qs.get('sk') || '');
     const SESSION_ID = _ssGet('aurora_session_id') ||
       ((IS_DEMO ? 'DEMO_' : (IS_LOADTEST ? 'LT_' : '')) + 'S' + SESSION_START + '_' + Math.random().toString(36).slice(2, 7).toUpperCase());
     _ssSet('aurora_session_start', String(SESSION_START));

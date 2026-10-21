@@ -4,6 +4,7 @@
 //   (저장소 루트에서) python -m http.server 8765
 //   node scripts/load_test.js                      # 기본 50세션, http://localhost:8765
 //   SESSIONS=50 BASE_URL=http://localhost:8765 node scripts/load_test.js
+//   STUDY_KEY=loadtest_20261021_run2 node scripts/load_test.js   # 같은 날 다시 돌릴 때
 //
 // - 각 세션은 가짜 PID(test_ + 랜덤)를 쓰고, studyKey는 loadtest_YYYYMMDD로 실험 데이터와 분리된다.
 //   세션 ID는 LT_ 접두사가 붙어 Apps Script 시트에서도 구분된다.

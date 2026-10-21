@@ -1,5 +1,7 @@
 # Aurora 쇼핑몰 (연구용)
 
+> **Prolific·Qualtrics 담당자는 [PROLIFIC_SETUP.md](PROLIFIC_SETUP.md)만 보면 된다.**
+
 Prolific 참가자 대상 연구용 쇼핑몰. 정적 HTML(`index.html`)이고 GitHub `main`에 push하면 Netlify(auroraco.netlify.app)에 바로 배포된다. **main push = 진행 중인 실험에 즉시 반영**이므로 작업은 브랜치에서 한다.
 
 ## 접속 URL
@@ -90,7 +92,8 @@ firebase login
 firebase deploy --only database
 ```
 
-> ⚠️ 2026-10-21 확인 시점에 DB가 **누구나 읽을 수 있는 상태**(테스트 모드)였다. 파일럿 전에 반드시 위 명령으로 규칙을 배포한다.
+> 2026-10-21 배포 완료. 규칙을 바꾸면 위 명령으로 다시 배포한다(이 저장소 폴더에서 실행해야 `database.rules.json`이 올라간다).
+> 현재 적용된 규칙 확인: `firebase database:get /.settings/rules` (Git Bash에서는 앞에 `MSYS_NO_PATHCONV=1`)
 
 ## 서비스 계정 키
 
