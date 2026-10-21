@@ -2067,11 +2067,12 @@
       </div>
       <div style="margin-top:16px;background:linear-gradient(135deg,#2b2620,#5c5347);border-radius:14px;padding:14px 24px;display:inline-block;">
         <div style="font-size:10px;color:rgba(255,255,255,0.7);font-weight:600;letter-spacing:2px;margin-bottom:4px;">ORDER CODE</div>
-        <div style="font-size:18px;font-weight:800;color:#ffffff;letter-spacing:2px;font-family:'Courier New',monospace;">${payCode}</div>
+        <div id="successCode" style="font-size:18px;font-weight:800;color:#ffffff;letter-spacing:2px;font-family:'Courier New',monospace;">${payCode}</div>
       </div>
       <div style="margin-top:14px;background:#fff8e1;border:2px solid #f39c12;border-radius:12px;padding:12px 20px;font-size:13px;font-weight:600;color:#b7770d;line-height:1.6;">
         ⚠️ Please return to SURVEY SITE and enter this code.<br>You must record this code to complete the study.
       </div>`;
+        addCopyButton(document.getElementById('successCode'), payCode, true);
         window._pendingNormalCode = payCode;
         // normal만: 챗봇 즉시 등장 (지연 0 — 모달 닫고 바로 아바타). delay는 이미 챗봇 떠있었으므로 제외
         if (!window._wasDelay) {
@@ -2130,7 +2131,7 @@
             setTimeout(() => {
               const code = window._pendingNormalCode;
               if (code) {
-                addBotMessage("📋 Your order code: " + code);
+                addCopyButton(addBotMessage("📋 Your order code: " + code), code);
                 setTimeout(() => {
                   addBotMessage("⚠️ Please return to SURVEY SITE and enter this code. You must record this code to complete the study.");
                 }, 600);
@@ -2213,6 +2214,12 @@
     // 데모 세션 구분값: ?demo=1 이면 로그를 참가자 데이터와 분리해서 태깅
     const _qs = new URLSearchParams(window.location.search);
     const IS_DEMO = _qs.get('demo') === '1';
+    // 같은 탭에 다른 PROLIFIC_PID로 들어오면 이전 세션을 이어 쓰지 않는다
+    const _urlPid = (_qs.get('PROLIFIC_PID') || '').trim();
+    if (_urlPid && _ssGet('aurora_pid') && _urlPid !== _ssGet('aurora_pid')) {
+      ['aurora_session_id', 'aurora_session_start', 'aurora_seq', 'aurora_meta_written',
+        'aurora_study_id', 'aurora_prolific_session_id'].forEach(function (k) { try { sessionStorage.removeItem(k); } catch (e) { } });
+    }
     // 새로고침해도 같은 세션 ID·시작 시각을 유지 (탭을 닫으면 초기화)
     const SESSION_START = Number(_ssGet('aurora_session_start')) || Date.now();
     const SESSION_ID = _ssGet('aurora_session_id') ||
@@ -2295,6 +2302,11 @@
     let _fbSeq = Number(_ssGet('aurora_seq')) || 0;   // 새로고침해도 이어서 증가
     const _fbPending = new Map();                      // seq → 아직 서버 확인을 못 받은 이벤트
     let _fbApi = null;                                 // firebase-logger.js 로드 후 채워짐
+    let _metaCode = null;                              // meta/code로 보낼 첫 주문 코드
+
+    function _fbWriteMetaCode() {
+      _fbApi.writeMeta({ code: _metaCode }).catch(function (err) { console.warn('[Aurora] meta code write failed', err); });
+    }
 
     function _wait(ms) { return new Promise(function (r) { setTimeout(function () { r(false); }, ms); }); }
 
@@ -2316,7 +2328,11 @@
       _ssSet('aurora_seq', String(_fbSeq));
       if (STUDY_ID) ev.studyId = STUDY_ID.slice(0, 64);
       const m = d.match(/AC-[A-Z0-9]+-[A-Z0-9]{4}/);
-      if (m) ev.code = m[0];
+      if (m) {
+        ev.code = m[0];
+        // 처음 나온 주문 코드를 meta/code에도 저장 (규칙상 1회만 기록됨)
+        if (!_metaCode) { _metaCode = m[0]; if (_fbApi) _fbWriteMetaCode(); }
+      }
 
       const item = { ev: ev, key: null, attempts: 0, inflight: false, beaconed: false };
       item.acked = new Promise(function (r) { item.resolve = r; });
@@ -2358,6 +2374,7 @@
         // 같은 PID의 다른 탭이 먼저 meta를 썼다면 규칙상 거부된다 — 그대로 둔다
         api.writeMeta(meta).then(function () { _ssSet('aurora_meta_written', '1'); }, function () { _ssSet('aurora_meta_written', '1'); });
       }
+      if (_metaCode) _fbWriteMetaCode();
       Array.from(_fbPending.values()).forEach(_fbSend);
     }
 
@@ -2616,6 +2633,27 @@
       align-self: flex-end;
     }
 
+    /* 주문 코드 옆 작은 복사 버튼 (문구·배치는 그대로, 버튼만 덧붙임) */
+    .code-copy-btn {
+      margin-left: 6px;
+      padding: 1px 8px;
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 1.6;
+      vertical-align: middle;
+      border: 1px solid #c9c2b8;
+      border-radius: 6px;
+      background: #f7f4f0;
+      color: #5c5347;
+      cursor: pointer;
+    }
+
+    .code-copy-btn.on-dark {
+      border-color: rgba(255, 255, 255, 0.5);
+      background: rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+    }
+
     .msg-typing {
       display: flex;
       gap: 4px;
@@ -2844,6 +2882,30 @@
       el.className = 'msg bot'; el.textContent = text;
       document.getElementById('chatMessages').appendChild(el);
       scrollChat();
+      return el;
+    }
+    // 주문 코드 옆에 복사 버튼을 붙인다 (설문 입력 오류 — 공백·AC- 누락 등 — 줄이기)
+    function addCopyButton(container, code, onDark) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'code-copy-btn' + (onDark ? ' on-dark' : '');
+      btn.textContent = 'Copy';
+      btn.onclick = function () {
+        function done() {
+          btn.textContent = 'Copied ✓';
+          setTimeout(function () { btn.textContent = 'Copy'; }, 1500);
+        }
+        function fallback() {
+          const ta = document.createElement('textarea');
+          ta.value = code; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+          document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(); } catch (e) { }
+          ta.remove();
+        }
+        if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(code).then(done, fallback);
+        else fallback();
+      };
+      container.appendChild(btn);
     }
     function addUserMessage(text) {
       const el = document.createElement('div');
@@ -3011,7 +3073,7 @@
             removeTyping();
             addBotMessage("Our team will follow up within 2–3 business days. Here is your case reference code:");
             setTimeout(() => {
-              addBotMessage("📋 Case Code: " + code);
+              addCopyButton(addBotMessage("📋 Case Code: " + code), code);
               setTimeout(() => {
                 addBotMessage("⚠️ Please return to SURVEY SITE and enter this code. You must record this code to complete the study.");
               }, 600);
