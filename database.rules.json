@@ -1,0 +1,104 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "aurora_logs": {
+      "$studyKey": {
+        "$pid": {
+          "meta": {
+            "$field": {
+              ".write": "!data.exists() && newData.exists() && $studyKey.length <= 64 && $pid.length <= 64",
+              ".validate": "$field.matches(/^(cond|errorType|sessionId|userAgent|startedAt|pidStatus|pidRaw|prolificStudyId|prolificSessionId|code)$/) && ((newData.isString() && newData.val().length <= 512) || ($field === 'startedAt' && newData.isNumber()))"
+            }
+          },
+          "events": {
+            "$pushId": {
+              ".write": "!data.exists() && newData.exists() && $studyKey.length <= 64 && $pid.length <= 64",
+              ".validate": "newData.hasChildren(['seq', 'ts', 'serverTs', 'elapsed', 'type', 'detail', 'cond', 'errorType', 'sessionId'])",
+              "seq": {
+                ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() < 100000"
+              },
+              "ts": {
+                ".validate": "newData.isNumber()"
+              },
+              "serverTs": {
+                ".validate": "newData.val() === now"
+              },
+              "elapsed": {
+                ".validate": "newData.isNumber()"
+              },
+              "type": {
+                ".validate": "newData.isString() && newData.val().matches(/^(PAGE_ENTER|PRODUCT_CLICK|CART_ADD|CART_OPEN|CART_QTY_CHANGE|CART_REMOVE|WISHLIST_ADD|WISHLIST_REMOVE|CHECKOUT_CLICK|PAYMENT_ATTEMPT|PAYMENT_SUCCESS|CHATBOT_AUTO_APPEAR|CHATBOT_OPEN|CHATBOT_BOT_MSG|CHATBOT_USER_MSG|CHATBOT_QUICK_REPLY|CHATBOT_ISSUE_RESOLVED|SESSION_END|UNKNOWN)$/)"
+              },
+              "detail": {
+                ".validate": "newData.isString() && newData.val().length <= 1000"
+              },
+              "cond": {
+                ".validate": "newData.isString() && newData.val().matches(/^(ne|sm|em)$/)"
+              },
+              "errorType": {
+                ".validate": "newData.isString() && newData.val().matches(/^(normal|sumerror|delay)$/)"
+              },
+              "sessionId": {
+                ".validate": "newData.isString() && newData.val().length <= 64"
+              },
+              "studyId": {
+                ".validate": "newData.isString() && newData.val().length <= 64"
+              },
+              "code": {
+                ".validate": "newData.isString() && newData.val().matches(/^AC-[A-Z0-9]{1,16}-[A-Z0-9]{4}$/)"
+              },
+              "$other": {
+                ".validate": false
+              }
+            }
+          },
+          "beacon": {
+            "$pushId": {
+              ".write": "!data.exists() && newData.exists() && $studyKey.length <= 64 && $pid.length <= 64",
+              "$i": {
+                ".validate": "$i.matches(/^[0-9]{1,2}$/) && newData.hasChildren(['seq', 'ts', 'serverTs', 'elapsed', 'type', 'detail', 'cond', 'errorType', 'sessionId'])",
+                "seq": {
+                  ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() < 100000"
+                },
+                "ts": {
+                  ".validate": "newData.isNumber()"
+                },
+                "serverTs": {
+                  ".validate": "newData.val() === now"
+                },
+                "elapsed": {
+                  ".validate": "newData.isNumber()"
+                },
+                "type": {
+                  ".validate": "newData.isString() && newData.val().matches(/^(PAGE_ENTER|PRODUCT_CLICK|CART_ADD|CART_OPEN|CART_QTY_CHANGE|CART_REMOVE|WISHLIST_ADD|WISHLIST_REMOVE|CHECKOUT_CLICK|PAYMENT_ATTEMPT|PAYMENT_SUCCESS|CHATBOT_AUTO_APPEAR|CHATBOT_OPEN|CHATBOT_BOT_MSG|CHATBOT_USER_MSG|CHATBOT_QUICK_REPLY|CHATBOT_ISSUE_RESOLVED|SESSION_END|UNKNOWN)$/)"
+                },
+                "detail": {
+                  ".validate": "newData.isString() && newData.val().length <= 1000"
+                },
+                "cond": {
+                  ".validate": "newData.isString() && newData.val().matches(/^(ne|sm|em)$/)"
+                },
+                "errorType": {
+                  ".validate": "newData.isString() && newData.val().matches(/^(normal|sumerror|delay)$/)"
+                },
+                "sessionId": {
+                  ".validate": "newData.isString() && newData.val().length <= 64"
+                },
+                "studyId": {
+                  ".validate": "newData.isString() && newData.val().length <= 64"
+                },
+                "code": {
+                  ".validate": "newData.isString() && newData.val().matches(/^AC-[A-Z0-9]{1,16}-[A-Z0-9]{4}$/)"
+                },
+                "$other": {
+                  ".validate": false
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

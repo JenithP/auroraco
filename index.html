@@ -2008,7 +2008,10 @@
 
     function closePayment() { document.getElementById('payModal').classList.remove('open'); }
 
-    function confirmPayment() {
+    let _paymentInFlight = false;
+    async function confirmPayment() {
+      if (_paymentInFlight) return;  // 로그 저장을 기다리는 동안 중복 결제 방지
+      _paymentInFlight = true;
       const total = cart.reduce((s, x) => s + x.price * x.qty, 0);
       const count = cart.reduce((s, x) => s + x.qty, 0);
 
@@ -2017,6 +2020,15 @@
 
       // sumerror: 실제 차감은 x10 (마이너스 허용)
       const charged = ERROR_TYPE === 'sumerror' ? total * 10 : total;
+
+      // 결제 로그가 서버에 저장된 뒤(최대 3초) 결과 화면을 보여준다 — 코드를 본 뒤 바로 탭을 닫아도 기록이 남도록
+      if (ERROR_TYPE === 'sumerror') {
+        await pushLog('PAYMENT_ATTEMPT', 'Code: ' + payCode + ' | ErrorType: sumerror | Charged: $' + charged.toFixed(2) + ' | Expected: $' + total.toFixed(2));
+      } else {
+        await pushLog('PAYMENT_SUCCESS', 'Code: ' + payCode + ' | ErrorType: ' + (window._savedErrorType || 'normal') + ' | Charged: $' + charged.toFixed(2) + ' | Items: ' + count + ' | Products: ' + cart.map(x => x.name).join(', '));
+      }
+      _paymentInFlight = false;
+
       userCredit = userCredit - charged; // 마이너스 가능
       updateCreditDisplay();
 
@@ -2040,7 +2052,6 @@
           <div style="font-size:22px;font-weight:800;color:${userCredit < 0 ? '#e74c3c' : '#2b2620'};">${userCredit < 0 ? '-$' + Math.abs(userCredit).toFixed(2) : '$' + userCredit.toFixed(2)}</div>
         </div>
       </div>`;
-        pushLog('PAYMENT_ATTEMPT', 'Code: ' + payCode + ' | ErrorType: sumerror | Charged: $' + charged.toFixed(2) + ' | Expected: $' + total.toFixed(2));
       } else {
         // 정상 + delay: 팝업에 코드번호 표시
         detailEl.innerHTML = `
@@ -2061,7 +2072,6 @@
       <div style="margin-top:14px;background:#fff8e1;border:2px solid #f39c12;border-radius:12px;padding:12px 20px;font-size:13px;font-weight:600;color:#b7770d;line-height:1.6;">
         ⚠️ Please return to SURVEY SITE and enter this code.<br>You must record this code to complete the study.
       </div>`;
-        pushLog('PAYMENT_SUCCESS', 'Code: ' + payCode + ' | ErrorType: ' + (window._savedErrorType || 'normal') + ' | Charged: $' + charged.toFixed(2) + ' | Items: ' + count + ' | Products: ' + cart.map(x => x.name).join(', '));
         window._pendingNormalCode = payCode;
         // normal만: 챗봇 즉시 등장 (지연 0 — 모달 닫고 바로 아바타). delay는 이미 챗봇 떠있었으므로 제외
         if (!window._wasDelay) {
@@ -2188,6 +2198,7 @@
   </script>
 
   <!-- ===== TRACKING SYSTEM ===== -->
+  <script src="firebase-config.js"></script>
   <script>
     // ── 구글 시트 설정 ──────────────────────────────────────────────
     const SHEET_ID = '1NakhDBZ0WEK4i0EGUVdkkf_gWPvY6BlYWOtHGkyGci8';
@@ -2245,6 +2256,8 @@
       return s.length > 200 ? s.slice(0, 200) + '…' : s;
     }
 
+    // 반환값: Firebase 쓰기 완료(최대 3초) 후 resolve되는 Promise.
+    // 대부분의 호출부는 무시하고, 결제·이슈 해결처럼 바로 코드를 보여주는 곳만 await한다.
     function pushLog(type, detail) {
       const entry = {
         session: SESSION_ID,
@@ -2258,8 +2271,146 @@
       };
       if (PID_STATUS === 'invalid') entry.pid_raw = PID_RAW;
       logBuffer.push(entry);
-      sendLogToSheet(entry);
+      if (LOG_CFG.LOG_TO_APPS_SCRIPT !== false) sendLogToSheet(entry);
+      return LOG_CFG.LOG_TO_FIREBASE !== false ? fbLog(entry.type, entry.detail) : Promise.resolve(false);
     }
+
+    // ── Firebase Realtime Database ──────────────────────────────────
+    // 경로: /aurora_logs/{studyKey}/{pid}/events/{pushId}, 이탈 시 남은 이벤트는 /beacon/{pushId}
+    const LOG_CFG = window.AURORA_CONFIG || {};
+    const FB_DB_URL = LOG_CFG.firebase ? LOG_CFG.firebase.databaseURL : '';
+    const ALLOWED_TYPES = ['PAGE_ENTER', 'PRODUCT_CLICK', 'CART_ADD', 'CART_OPEN', 'CART_QTY_CHANGE', 'CART_REMOVE',
+      'WISHLIST_ADD', 'WISHLIST_REMOVE', 'CHECKOUT_CLICK', 'PAYMENT_ATTEMPT', 'PAYMENT_SUCCESS',
+      'CHATBOT_AUTO_APPEAR', 'CHATBOT_OPEN', 'CHATBOT_BOT_MSG', 'CHATBOT_USER_MSG', 'CHATBOT_QUICK_REPLY',
+      'CHATBOT_ISSUE_RESOLVED', 'SESSION_END', 'UNKNOWN'];
+    const CRITICAL_WAIT_MS = 3000;
+    // 배정 조건은 URL 기준으로 고정 (ERROR_TYPE은 delay 해결 후 'normal'로 바뀌므로 쓰지 않는다)
+    const COND = ['ne', 'sm', 'em'].includes(_qs.get('a')) ? _qs.get('a') : 'ne';
+    const ASSIGNED_ERROR_TYPE = ({ se: 'sumerror', dl: 'delay', nm: 'normal' })[_qs.get('c')] || 'normal';
+    // 데모·부하 테스트는 실험 데이터와 다른 studyKey로 분리
+    const STUDY_KEY = IS_DEMO ? 'demo'
+      : (/^loadtest_\d{8}$/.test(_qs.get('sk') || '') ? _qs.get('sk') : (LOG_CFG.STUDY_KEY || 'unset'));
+    const FB_BASE = 'aurora_logs/' + STUDY_KEY + '/' + PID;
+
+    let _fbSeq = Number(_ssGet('aurora_seq')) || 0;   // 새로고침해도 이어서 증가
+    const _fbPending = new Map();                      // seq → 아직 서버 확인을 못 받은 이벤트
+    let _fbApi = null;                                 // firebase-logger.js 로드 후 채워짐
+
+    function _wait(ms) { return new Promise(function (r) { setTimeout(function () { r(false); }, ms); }); }
+
+    function fbLog(type, detail) {
+      let t = String(type);
+      let d = String(detail == null ? '' : detail);
+      if (!ALLOWED_TYPES.includes(t)) { d = 'Original type: ' + t + ' | ' + d; t = 'UNKNOWN'; }
+      const ev = {
+        seq: _fbSeq++,
+        ts: Date.now(),
+        serverTs: { '.sv': 'timestamp' },
+        elapsed: Number(elapsedSec()),
+        type: t,
+        detail: d.slice(0, 1000),
+        cond: COND,
+        errorType: ASSIGNED_ERROR_TYPE,
+        sessionId: SESSION_ID
+      };
+      _ssSet('aurora_seq', String(_fbSeq));
+      if (STUDY_ID) ev.studyId = STUDY_ID.slice(0, 64);
+      const m = d.match(/AC-[A-Z0-9]+-[A-Z0-9]{4}/);
+      if (m) ev.code = m[0];
+
+      const item = { ev: ev, key: null, attempts: 0, inflight: false, beaconed: false };
+      item.acked = new Promise(function (r) { item.resolve = r; });
+      _fbPending.set(ev.seq, item);
+      _fbSend(item);
+      return Promise.race([item.acked, _wait(CRITICAL_WAIT_MS)]);
+    }
+
+    function _fbSend(item) {
+      if (!_fbApi || item.inflight) return;   // SDK 로드 전이면 큐에 두었다가 로드 직후 전송
+      item.inflight = true;
+      const w = _fbApi.writeEvent(item.ev, item.key);
+      item.key = w.key;
+      w.done.then(function () {
+        _fbPending.delete(item.ev.seq);
+        item.resolve(true);
+      }, function (err) {
+        item.inflight = false;
+        item.attempts++;
+        if (item.attempts >= 5) {
+          console.warn('[Aurora] Firebase write failed 5 times', item.ev.type, err);
+          _fbPending.delete(item.ev.seq);
+          item.resolve(false);
+          return;
+        }
+        setTimeout(function () { _fbSend(item); }, 500 * Math.pow(2, item.attempts));  // 1s, 2s, 4s, 8s
+      });
+    }
+
+    function _fbConnected(api) {
+      _fbApi = api;
+      if (!_ssGet('aurora_meta_written')) {
+        const meta = {
+          cond: COND, errorType: ASSIGNED_ERROR_TYPE, sessionId: SESSION_ID,
+          userAgent: navigator.userAgent.slice(0, 512), startedAt: SESSION_START,
+          pidStatus: PID_STATUS, prolificStudyId: STUDY_ID.slice(0, 64), prolificSessionId: PROLIFIC_SESSION_ID.slice(0, 64)
+        };
+        if (PID_STATUS === 'invalid') meta.pidRaw = PID_RAW.slice(0, 256);
+        // 같은 PID의 다른 탭이 먼저 meta를 썼다면 규칙상 거부된다 — 그대로 둔다
+        api.writeMeta(meta).then(function () { _ssSet('aurora_meta_written', '1'); }, function () { _ssSet('aurora_meta_written', '1'); });
+      }
+      Array.from(_fbPending.values()).forEach(_fbSend);
+    }
+
+    // SDK는 load 이후에 불러온다 — load 이벤트와 웰컴 팝업 타이밍에 영향이 없도록
+    if (LOG_CFG.LOG_TO_FIREBASE !== false) {
+      window.addEventListener('load', function () {
+        import('./firebase-logger.js')
+          .then(function (mod) { _fbConnected(mod.connect(FB_BASE)); })
+          .catch(function (err) {
+            // SDK를 못 불러오면(차단·네트워크) REST로 대체
+            console.warn('[Aurora] Firebase SDK unavailable, using REST', err);
+            _fbConnected({
+              writeEvent: function (ev) {
+                const done = fetch(FB_DB_URL + '/' + FB_BASE + '/events.json', { method: 'POST', body: JSON.stringify(ev), keepalive: true })
+                  .then(function (res) { if (!res.ok) throw new Error('HTTP ' + res.status); });
+                return { key: null, done: done };
+              },
+              writeMeta: function (meta) {
+                return fetch(FB_DB_URL + '/' + FB_BASE + '/meta.json', { method: 'PATCH', body: JSON.stringify(meta), keepalive: true })
+                  .then(function (res) { if (!res.ok) throw new Error('HTTP ' + res.status); });
+              }
+            });
+          });
+      });
+    }
+
+    // ── 이탈 시 sendBeacon ──────────────────────────────────────────
+    // 서버 확인을 못 받은 이벤트를 배열 하나로 묶어 REST POST(자동 push 키)로 보낸다.
+    // SDK 쓰기가 나중에 도착해 중복되면 내보내기 단계에서 (pid, sessionId, seq)로 하나만 남긴다.
+    function _fbBeaconFlush() {
+      if (LOG_CFG.LOG_TO_FIREBASE === false || !navigator.sendBeacon) return;
+      const items = Array.from(_fbPending.values()).filter(function (it) { return !it.beaconed; });
+      for (let i = 0; i < items.length; i += 100) {   // sendBeacon 본문 64KB 제한 대비
+        const chunk = items.slice(i, i + 100);
+        const body = new Blob([JSON.stringify(chunk.map(function (it) { return it.ev; }))], { type: 'text/plain' });
+        if (navigator.sendBeacon(FB_DB_URL + '/' + FB_BASE + '/beacon.json', body)) {
+          chunk.forEach(function (it) { it.beaconed = true; });
+        }
+      }
+    }
+
+    let _sessionEnded = false;
+    window.addEventListener('pagehide', function () {
+      if (!_sessionEnded) {
+        _sessionEnded = true;
+        pushLog('SESSION_END', 'Page closed or left | Last seq: ' + _fbSeq);
+      }
+      _fbBeaconFlush();
+    });
+    window.addEventListener('pageshow', function (e) { if (e.persisted) _sessionEnded = false; });  // 뒤로가기 캐시 복귀
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'hidden') _fbBeaconFlush();
+    });
 
     // ── 구글 시트 전송 (fetch no-cors) ───────────────────────────
     function sendLogToSheet(entry) {
@@ -2850,13 +3001,14 @@
         'Start Shopping', 'Looks good!', 'Okay, understood'].includes(option)) {
         clearQuickReplies(); addUserMessage(option);
         addTyping();
-        setTimeout(() => {
-          removeTyping();
+        setTimeout(async () => {
           // sumerror가 있었고 코드가 있으면 코드 발급
           if (option === 'Okay, understood' && window._pendingPayCode) {
             const code = window._pendingPayCode;
             window._pendingPayCode = null;
-            pushLog('CHATBOT_ISSUE_RESOLVED', 'Issue: sumerror | Code: ' + code);
+            // 이슈 해결 로그가 저장된 뒤(최대 3초) 코드를 보여준다
+            await pushLog('CHATBOT_ISSUE_RESOLVED', 'Issue: sumerror | Code: ' + code);
+            removeTyping();
             addBotMessage("Our team will follow up within 2–3 business days. Here is your case reference code:");
             setTimeout(() => {
               addBotMessage("📋 Case Code: " + code);
@@ -2867,6 +3019,7 @@
               showQuickReplies(['Socks', 'T-Shirts & Polos', 'Cart help', 'Shipping']);
             }, 500);
           } else {
+            removeTyping();
             addBotMessage("Great! Let me know if you need anything. 😊");
             setAvatar('smile');
             showQuickReplies(['Socks', 'T-Shirts & Polos', 'Cart help', 'Shipping']);
