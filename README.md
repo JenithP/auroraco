@@ -81,6 +81,7 @@ python scripts/check_loss.py logs.csv --survey "qualtrics_export.csv"
 - `check_loss.py`는 Qualtrics 3줄 헤더 형식을 그대로 읽는다. Prolific ID 열은 `PROLIFIC_PID`(Embedded Data) → "prolific id" 문항 순으로, 주문 코드 열은 "enter the code" 문항 전체를 자동으로 찾는다. 다르면 `--pid-col`, `--code-col`(여러 번 가능)로 지정한다.
 - 설문 코드는 앞뒤 공백·소문자·`AC-` 누락을 바로잡은 뒤 비교한다.
 - `--survey` 없이 실행하면 로그 쪽 지표(seq 누락, `SESSION_END` 누락)만 본다. `--strict`를 주면 seq 누락이 하나라도 있을 때 종료 코드 1로 끝난다(부하 테스트용).
+- `test`로 시작하는 PID(연구자 Preview 테스트)는 로그·설문 양쪽에서 기본으로 제외한다. 부하 테스트를 검증할 때는 `--include-test`를 붙인다.
 
 ## 보안 규칙 배포 (사람이 할 일)
 

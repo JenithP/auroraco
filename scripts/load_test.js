@@ -122,5 +122,5 @@ async function runSession(browser, i) {
     `${results.filter(r => r.code).length} codes -> ${out}`);
   failed.forEach(r => console.log('  ERROR', r.PROLIFIC_PID, r.error));
   console.log(`\nnext:\n  python scripts/export_logs.py --study-key ${STUDY_KEY} --out ${STUDY_KEY}.csv` +
-    `\n  python scripts/check_loss.py ${STUDY_KEY}.csv --survey "${out}" --pid-col PROLIFIC_PID --code-col code --strict`);
+    `\n  python scripts/check_loss.py ${STUDY_KEY}.csv --survey "${out}" --pid-col PROLIFIC_PID --code-col code --include-test --strict`);
 })();

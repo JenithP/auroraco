@@ -44,8 +44,15 @@ def seq_missing(seqs):
     return (max(present) + 1 - len(present)) if present else 0
 
 
-def load_participants(logs_csv):
+def is_test_pid(pid):
+    """연구자가 Preview로 넣는 test_… ID (한글 등은 _로 바뀌어 test____ 형태로도 남는다)."""
+    return str(pid).strip().lower().startswith("test")
+
+
+def load_participants(logs_csv, include_test=False):
     logs = pd.read_csv(logs_csv, dtype=str, keep_default_na=False, encoding="utf-8-sig")
+    if not include_test:
+        logs = logs[~logs["pid"].map(is_test_pid)]
     logs["seq"] = pd.to_numeric(logs["seq"], errors="coerce")
     logs = logs.dropna(subset=["seq"])
     logs["seq"] = logs["seq"].astype(int)
@@ -112,9 +119,10 @@ def main():
     ap.add_argument("--code-col", action="append", help="설문 주문 코드 열 이름, 여러 번 가능 (기본: 자동)")
     ap.add_argument("--participants-out", help="참가자별 지표 CSV 저장 경로")
     ap.add_argument("--strict", action="store_true", help="seq 누락이 하나라도 있으면 종료 코드 1")
+    ap.add_argument("--include-test", action="store_true", help="test_… PID도 포함 (부하 테스트 검증용, 기본은 제외)")
     args = ap.parse_args()
 
-    part, log_codes = load_participants(args.logs_csv)
+    part, log_codes = load_participants(args.logs_csv, args.include_test)
     part["seq_gap"] = part["seq_missing"] > 0
     log_pids = set(part["pid"])
 
@@ -142,6 +150,8 @@ def main():
         sv["code"] = raw_code.map(normalize_code)
         no_pid = (sv["pid"] == "").sum()
         sv = sv[sv["pid"] != ""]
+        if not args.include_test:
+            sv = sv[~sv["pid"].map(is_test_pid)]
         sv["matched"] = sv["pid"].isin(log_pids)
         sv["has_code"] = sv["code_raw"].str.strip() != ""
         sv["code_bad_format"] = sv["has_code"] & sv["code"].isna()
