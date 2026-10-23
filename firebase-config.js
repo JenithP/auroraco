@@ -7,8 +7,8 @@ window.AURORA_CONFIG = {
   // 데모(?demo=1)는 'demo', 부하 테스트(?sk=loadtest_YYYYMMDD)는 해당 키로 자동 분리된다.
   STUDY_KEY: '2026-11_replication',
 
-  // 파일럿에서 유실률 0%를 확인할 때까지 Apps Script와 Firebase에 이중 기록한다.
-  LOG_TO_APPS_SCRIPT: true,
+  // 파일럿(2026-10-22~23)에서 Firebase 유실률 0%를 확인해 본실험부터 Apps Script 기록은 끈다.
+  LOG_TO_APPS_SCRIPT: false,
   LOG_TO_FIREBASE: true,
 
   FIREBASE_SDK_VERSION: '12.8.0',

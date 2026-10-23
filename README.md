@@ -23,7 +23,7 @@ https://auroraco.netlify.app/?c=se&a=sm&PROLIFIC_PID={{%PROLIFIC_PID%}}&STUDY_ID
 `pushLog(type, detail)` 한 곳에서 두 군데로 보낸다. 설정은 [`firebase-config.js`](firebase-config.js) 한 곳에서 바꾼다.
 
 - `STUDY_KEY`: 실험 차수 (`/aurora_logs/{STUDY_KEY}/...`)
-- `LOG_TO_APPS_SCRIPT`: 기존 Google Sheets 기록. 파일럿에서 Firebase 유실률 0%를 확인한 뒤 `false`로 끈다.
+- `LOG_TO_APPS_SCRIPT`: 기존 Google Sheets 기록. 파일럿에서 Firebase 유실률 0%를 확인해 2026-10-23부터 `false`.
 - `LOG_TO_FIREBASE`: Firebase Realtime Database 기록
 
 Firebase 데이터 구조:
@@ -82,6 +82,21 @@ python scripts/check_loss.py logs.csv --survey "qualtrics_export.csv"
 - 설문 코드는 앞뒤 공백·소문자·`AC-` 누락을 바로잡은 뒤 비교한다.
 - `--survey` 없이 실행하면 로그 쪽 지표(seq 누락, `SESSION_END` 누락)만 본다. `--strict`를 주면 seq 누락이 하나라도 있을 때 종료 코드 1로 끝난다(부하 테스트용).
 - `test`로 시작하는 PID(연구자 Preview 테스트)는 로그·설문 양쪽에서 기본으로 제외한다. 부하 테스트를 검증할 때는 `--include-test`를 붙인다.
+
+### 파일럿과 본실험 구분
+
+파일럿과 본실험은 같은 `STUDY_KEY`(`2026-11_replication`)에 쌓인다. **2026-10-23 11:30 KST**(`1792722600000` ms)를 기준으로 나눈다.
+
+- 파일럿: 2026-10-21 22:54 ~ 2026-10-23 01:10 KST 사이에 시작한 103명(테스트 접속 포함). Apps Script 이중 기록이 켜져 있던 기간.
+- 본실험: 위 기준 이후 시작. `LOG_TO_APPS_SCRIPT=false`.
+
+```python
+import pandas as pd
+meta = pd.read_csv("logs_meta.csv")
+main_pids = set(meta.loc[meta.startedAt >= 1792722600000, "pid"])
+logs = pd.read_csv("logs.csv")
+logs = logs[logs.pid.isin(main_pids)]
+```
 
 ## 보안 규칙 배포 (사람이 할 일)
 
