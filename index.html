@@ -1618,7 +1618,7 @@
   <!-- WELCOME GIF -->
   <div id="gifOverlay"
     style="display:none; position:fixed; inset:0; z-index:999999; background:rgba(0,0,0,0.65); align-items:center; justify-content:center;">
-    <img id="gifImg" src="images/welcome_neutral_new.gif" style="width:700px; height:700px; object-fit:contain; border-radius:20px;">
+    <img id="gifImg" src="images/welcome_neutral_new_flat.gif" style="width:700px; height:700px; object-fit:contain; border-radius:20px;">
   </div>
 
   <!-- INSUFFICIENT CREDIT MODAL -->
@@ -1711,7 +1711,7 @@
 
         // 3. gif 오버레이 표시 (첫 등장: welcome)
         const gifOv = document.getElementById('gifOverlay');
-        document.getElementById('gifImg').src = 'images/welcome_neutral_new.gif';
+        document.getElementById('gifImg').src = 'images/welcome_neutral_new_flat.gif';
         gifOv.style.display = 'flex';
 
         // 4. 3초 후 gif 사라짐
@@ -2111,7 +2111,7 @@
         // 세 조건(normal / sumerror / delay) 모두 동일하게 아바타 3종으로 분기
         const gifImg = document.getElementById('gifImg');
         if (gifImg) gifImg.src = 'images/' + _secondGifMap[AVATAR_TYPE] + '.gif';
-        avatarVideoName = _avatarVideoMap[AVATAR_TYPE] || 'neutral_1'; // 프로필 비디오도 분기로 전환
+        avatarVideoName = _avatarVideoMap[AVATAR_TYPE] || 'neutral_1_flat'; // 프로필 비디오도 분기로 전환
         gifOv.style.display = 'flex';
         setTimeout(() => { gifOv.style.display = 'none'; }, 5000);
       }
@@ -2776,7 +2776,7 @@
     <div class="chatbot-avatar-area">
       <div class="chatbot-video-wrap">
         <video id="avatarVideo" autoplay loop muted playsinline>
-          <source src="videos/neutral_1.mp4" type="video/mp4">
+          <source src="videos/neutral_1_flat.mp4" type="video/mp4">
         </video>
       </div>
       <div class="chatbot-avatar-info">
@@ -2827,9 +2827,9 @@
     const _avatarMap = { 'ne': 'neutral', 'sm': 'smile', 'em': 'empathic' };
     let AVATAR_TYPE = _avatarMap[_p.get('a')] || 'neutral';
     // 두 번째 등장 GIF (조건 무관 공통 — 파일만 교체하면 됨)
-    const _secondGifMap = { neutral: 'neutral_problem', smile: 'smile_problem', empathic: 'empathic_problem' };
+    const _secondGifMap = { neutral: 'neutral_problem_flat', smile: 'smile_problem_big', empathic: 'empathic_problem' };
     // 챗봇 프로필 아바타 비디오 (분기별)
-    const _avatarVideoMap = { neutral: 'neutral_1', smile: 'smile_only', empathic: 'empathic' };
+    const _avatarVideoMap = { neutral: 'neutral_1_flat', smile: 'smile_only_big', empathic: 'empathic' };
     // ==================================
 
     // ===== LOADING OVERLAY HELPERS =====
@@ -2844,8 +2844,8 @@
     }
     // ====================================
 
-    // 현재 프로필 아바타 비디오 (welcome=neutral_1, 문제 발생 시 분기로 전환)
-    let avatarVideoName = 'neutral_1';
+    // 현재 프로필 아바타 비디오 (welcome=neutral_1_flat, 문제 발생 시 분기로 전환)
+    let avatarVideoName = 'neutral_1_flat';
     function setAvatar(emotion) {
       const video = document.getElementById('avatarVideo');
       const resolved = avatarVideoName;
