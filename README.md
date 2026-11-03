@@ -71,7 +71,7 @@ pip install -r requirements.txt
 export GOOGLE_APPLICATION_CREDENTIALS=~/.secrets/aurora-sa.json
 
 # 1) Firebase → CSV (이벤트 1행 = 1줄, events/beacon 중복 제거)
-python scripts/export_logs.py --study-key 2026-11_replication --out logs.csv
+python scripts/export_logs.py --study-key 2026-11_expression_rerun --out logs.csv
 
 # 2) 로그 CSV + Qualtrics 원본 CSV → 유실 지표
 python scripts/check_loss.py logs.csv --survey "qualtrics_export.csv"
@@ -84,6 +84,8 @@ python scripts/check_loss.py logs.csv --survey "qualtrics_export.csv"
 - `test`로 시작하는 PID(연구자 Preview 테스트)는 로그·설문 양쪽에서 기본으로 제외한다. 부하 테스트를 검증할 때는 `--include-test`를 붙인다.
 
 ### 파일럿과 본실험 구분
+
+표정을 바꾼 재실험은 새 `STUDY_KEY`(`2026-11_expression_rerun`)에 쌓인다. 아래 구분은 이전 표정으로 진행한 `2026-11_replication` 데이터에만 해당하며, 그 데이터를 받으려면 `--study-key 2026-11_replication`을 지정한다.
 
 파일럿과 본실험은 같은 `STUDY_KEY`(`2026-11_replication`)에 쌓인다. **2026-10-23 11:30 KST**(`1792722600000` ms)를 기준으로 나눈다.
 

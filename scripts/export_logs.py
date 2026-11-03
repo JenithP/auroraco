@@ -5,7 +5,7 @@ events와 beacon(이탈 시 sendBeacon)에 같은 이벤트가 둘 다 있으면
 
 인증은 GOOGLE_APPLICATION_CREDENTIALS 환경변수의 서비스 계정 키로 한다.
 
-    python scripts/export_logs.py --study-key 2026-11_replication --out logs.csv
+    python scripts/export_logs.py --study-key 2026-11_expression_rerun --out logs.csv
     python scripts/export_logs.py --from-json firebase-export.json --out logs.csv
 """
 import argparse
@@ -71,7 +71,7 @@ def main():
     sys.stdout.reconfigure(errors="replace")
     sys.stderr.reconfigure(errors="replace")
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--study-key", default="2026-11_replication", help="/aurora_logs/ 아래 실험 차수 키")
+    ap.add_argument("--study-key", default="2026-11_expression_rerun", help="/aurora_logs/ 아래 실험 차수 키")
     ap.add_argument("--from-json", help="Firebase에서 받은 JSON 파일(studyKey 노드 또는 DB 전체)")
     ap.add_argument("--out", default="logs.csv")
     ap.add_argument("--meta-out", help="참가자별 meta CSV (기본: <out>_meta.csv)")
