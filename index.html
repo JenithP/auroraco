@@ -1703,21 +1703,19 @@
         document.getElementById('chatbotWindow').classList.add('open');
         setAvatar(); // 분기에 맞는 아바타 프로필 비디오 로드
 
-        // 2. 인삿말 메시지 추가
-        setTimeout(() => {
-          addBotMessage("Hello! Welcome to Aurora Company. If you run into any issues while shopping, feel free to click the chatbot icon to call me anytime! 👋");
-          showQuickReplies(['Close for now', 'Start Shopping']);
-        }, 300);
-
-        // 3. gif 오버레이 표시 (첫 등장: welcome)
+        // 2. gif 오버레이 표시 (첫 등장: welcome)
         const gifOv = document.getElementById('gifOverlay');
         document.getElementById('gifImg').src = 'images/welcome_neutral_new_flat.gif';
         gifOv.style.display = 'flex';
+        // 두 번째 등장 GIF를 미리 받아 둔다 (팝업 시간 안에 끝까지 재생되도록)
+        new Image().src = 'images/' + _secondGifMap[AVATAR_TYPE] + '.gif';
 
-        // 4. 3초 후 gif 사라짐
+        // 3. gif를 끝까지 재생한 뒤 인삿말 메시지 추가
         setTimeout(() => {
           gifOv.style.display = 'none';
-        }, 8000);
+          botSay(["Hello! Welcome to Aurora Company. If you run into any issues while shopping, feel free to click the chatbot icon to call me anytime! 👋"],
+            () => showQuickReplies(['Close for now', 'Start Shopping']));
+        }, WELCOME_GIF_MS);
 
       }, 600);
     });
@@ -2074,10 +2072,12 @@
       </div>`;
         addCopyButton(document.getElementById('successCode'), payCode, true);
         window._pendingNormalCode = payCode;
-        // normal만: 챗봇 즉시 등장 (지연 0 — 모달 닫고 바로 아바타). delay는 이미 챗봇 떠있었으므로 제외
+        // normal만: 결제 결과를 sumerror와 같은 5초 보여준 뒤 챗봇 등장. delay는 이미 챗봇 떠있었으므로 제외
         if (!window._wasDelay) {
-          document.getElementById('successModal').classList.remove('open');
-          autoChatbotPopup('normal_complete');
+          setTimeout(() => {
+            document.getElementById('successModal').classList.remove('open');
+            autoChatbotPopup('normal_complete');
+          }, 5000);
         }
       }
 
@@ -2113,7 +2113,7 @@
         if (gifImg) gifImg.src = 'images/' + _secondGifMap[AVATAR_TYPE] + '.gif';
         avatarVideoName = _avatarVideoMap[AVATAR_TYPE] || 'neutral_1_flat'; // 프로필 비디오도 분기로 전환
         gifOv.style.display = 'flex';
-        setTimeout(() => { gifOv.style.display = 'none'; }, 5000);
+        setTimeout(() => { gifOv.style.display = 'none'; }, _secondGifMs[AVATAR_TYPE]);
       }
       // 챗봇 창 오픈
       chatOpen = true;
@@ -2122,33 +2122,23 @@
       setAvatar(); // 분기 프로필 비디오 로드
 
       if (mode === 'normal_complete') {
-        // 정상 결제 완료 후 인사
+        // 정상 결제 완료 후 인사 (gif가 끝난 뒤). 코드는 참가자가 Thanks!를 누르면 발급한다
         setTimeout(() => {
           setAvatar('smile');
-          addBotMessage("🎉 Thank you for shopping with Aurora Company!");
-          setTimeout(() => {
-            addBotMessage("Hope you enjoyed your experience. Have a wonderful day! 😊");
-            setTimeout(() => {
-              const code = window._pendingNormalCode;
-              if (code) {
-                addCopyButton(addBotMessage("📋 Your order code: " + code), code);
-                setTimeout(() => {
-                  addBotMessage("⚠️ Please return to SURVEY SITE and enter this code. You must record this code to complete the study.");
-                }, 600);
-              }
-              setAvatar('neutral');
-            }, 800);
-          }, 800);
-        }, 500);
+          botSay(["🎉 Thank you for shopping with Aurora Company!",
+            "Hope you enjoyed your experience. Have a wonderful day! 😊"], () => {
+            window._normalCodeGate = true;
+            showQuickReplies(['Thanks!']);
+            setAvatar('neutral');
+          });
+        }, _secondGifMs[AVATAR_TYPE]);
       } else {
-        // 에러 감지 시
+        // 에러 감지 시 (gif가 끝난 뒤)
         setTimeout(() => {
-          addBotMessage("Hello! Is there anything I can help you with?");
-          setTimeout(() => {
-            addBotMessage("⚠️ We've detected a potential issue with your recent transaction. What problem are you experiencing?");
-            showQuickReplies(['Sum error (wrong total)', 'Delay issue (slow loading)', 'No problem!']);
-          }, 800);
-        }, 500);
+          botSay(["Hello! Is there anything I can help you with?",
+            "⚠️ We've detected a potential issue with your recent transaction. What problem are you experiencing?"],
+            () => showQuickReplies(['Sum error (wrong total)', 'Delay issue (slow loading)', 'No problem!']));
+        }, _secondGifMs[AVATAR_TYPE]);
       }
     }
 
@@ -2828,6 +2818,9 @@
     let AVATAR_TYPE = _avatarMap[_p.get('a')] || 'neutral';
     // 두 번째 등장 GIF (조건 무관 공통 — 파일만 교체하면 됨)
     const _secondGifMap = { neutral: 'neutral_problem_flat', smile: 'smile_problem_big', empathic: 'empathic_problem' };
+    // GIF 재생 길이(ms). 오버레이를 이만큼 띄워 끝까지 보여준 뒤 메시지를 시작한다 — GIF를 바꾸면 함께 고친다
+    const _secondGifMs = { neutral: 6000, smile: 6080, empathic: 6000 };
+    const WELCOME_GIF_MS = 10400;
     // 챗봇 프로필 아바타 비디오 (분기별)
     const _avatarVideoMap = { neutral: 'neutral_1_flat', smile: 'smile_only_big', empathic: 'empathic' };
     // ==================================
@@ -2922,6 +2915,19 @@
       document.getElementById('chatMessages').appendChild(el); scrollChat();
     }
     function removeTyping() { const el = document.getElementById('typingIndicator'); if (el) el.remove(); }
+    // 메시지 속도: 참가자 입력에 답할 때까지의 시간, 앞 메시지를 읽을 시간(글자 수 비례, 1.5~4초)
+    const REPLY_DELAY = 1500;
+    function readDelay(text) { return Math.min(4000, Math.max(1500, text.length * 30)); }
+    // 입력 중 표시와 함께 메시지를 하나씩 보낸다. done은 마지막 메시지 요소를 받는다
+    function botSay(texts, done, delay = REPLY_DELAY) {
+      addTyping();
+      setTimeout(() => {
+        removeTyping();
+        const el = addBotMessage(texts[0]);
+        if (texts.length > 1) botSay(texts.slice(1), done, readDelay(texts[0]));
+        else if (done) done(el);
+      }, delay);
+    }
     function scrollChat() { const m = document.getElementById('chatMessages'); m.scrollTop = m.scrollHeight; }
     function showQuickReplies(options) {
       document.getElementById('quickReplies').innerHTML = options.map(o =>
@@ -2958,9 +2964,10 @@
         removeTyping();
         const reply = getBotReply(text);
         addBotMessage(reply.text); setAvatar(reply.emotion);
-        showQuickReplies(reply.quick);
+        // 코드 발급 전이면 직접 입력해도 Thanks! 버튼을 남긴다
+        showQuickReplies(window._normalCodeGate ? ['Thanks!'] : reply.quick);
         setTimeout(() => setAvatar('neutral'), 2500);
-      }, 900);
+      }, REPLY_DELAY);
     }
 
     function handleQuick(option) {
@@ -2995,7 +3002,7 @@
             setAvatar('neutral');
             showQuickReplies(['Sum error (wrong total)', 'No problem!']);
           }
-        }, 1000);
+        }, REPLY_DELAY);
         return;
       }
 
@@ -3006,20 +3013,17 @@
         setTimeout(() => {
           removeTyping();
           if (ERROR_TYPE === 'sumerror') {
-            addBotMessage("I see — it looks like there may have been a billing discrepancy. I've flagged this for our technical team. 🔍");
-            addTyping();
-            setTimeout(() => {
-              removeTyping();
-              addBotMessage("Unfortunately, this type of issue typically takes 2–3 business days to fully review and resolve. We sincerely apologize for the inconvenience.");
+            botSay(["I see — it looks like there may have been a billing discrepancy. I've flagged this for our technical team. 🔍",
+              "Unfortunately, this type of issue typically takes 2–3 business days to fully review and resolve. We sincerely apologize for the inconvenience."], () => {
               setAvatar('neutral');
               showQuickReplies(['Will I get a refund?', 'Okay, understood']);
-            }, 3000);
+            }, 0);
           } else {
             addBotMessage("I checked the billing system and everything looks correct on my end. The total seems accurate!");
             setAvatar('neutral');
             showQuickReplies(['Delay issue (slow loading)', 'No problem!']);
           }
-        }, 1000);
+        }, REPLY_DELAY);
         return;
       }
 
@@ -3032,7 +3036,7 @@
           addBotMessage("Our team will review the transaction and process any necessary adjustments within 2–3 business days. You'll be notified via email once resolved.");
           setAvatar('neutral');
           showQuickReplies(['Okay, understood']);
-        }, 800);
+        }, REPLY_DELAY);
         return;
       }
 
@@ -3044,7 +3048,7 @@
           removeTyping();
           addBotMessage("Please open your cart and check if the total looks correct. Let me know if there's still an issue! 🛒");
           showQuickReplies(['Looks good!', 'Still having issues']);
-        }, 600);
+        }, REPLY_DELAY);
         return;
       }
 
@@ -3056,7 +3060,7 @@
           addBotMessage("I'm sorry! Please try refreshing the page. If the issue persists, contact us at support@auroraandco.com");
           setAvatar('neutral');
           showQuickReplies(['Socks', 'T-Shirts & Polos', 'Cart help']);
-        }, 600);
+        }, REPLY_DELAY);
         return;
       }
 
@@ -3073,15 +3077,21 @@
             // 이슈 해결 로그가 저장된 뒤(최대 3초) 코드를 보여준다
             await pushLog('CHATBOT_ISSUE_RESOLVED', 'Issue: sumerror | Code: ' + code);
             removeTyping();
-            addBotMessage("Our team will follow up within 2–3 business days. Here is your case reference code:");
-            setTimeout(() => {
-              addCopyButton(addBotMessage("📋 Case Code: " + code), code);
-              setTimeout(() => {
-                addBotMessage("⚠️ Please return to SURVEY SITE and enter this code. You must record this code to complete the study.");
-              }, 600);
+            const intro = "Our team will follow up within 2–3 business days. Here is your case reference code:";
+            addBotMessage(intro);
+            botSay(["📋 Case Code: " + code], (el) => {
+              addCopyButton(el, code);
               setAvatar('neutral');
-              showQuickReplies(['Socks', 'T-Shirts & Polos', 'Cart help', 'Shipping']);
-            }, 500);
+              botSay(["⚠️ Please return to SURVEY SITE and enter this code. You must record this code to complete the study."],
+                () => showQuickReplies(['Socks', 'T-Shirts & Polos', 'Cart help', 'Shipping']));
+            }, readDelay(intro));
+          } else if (option === 'Thanks!' && window._normalCodeGate) {
+            // 정상 결제: 코드 발급
+            window._normalCodeGate = false;
+            const code = window._pendingNormalCode;
+            removeTyping();
+            addCopyButton(addBotMessage("📋 Your order code: " + code), code);
+            botSay(["⚠️ Please return to SURVEY SITE and enter this code. You must record this code to complete the study."]);
           } else {
             removeTyping();
             addBotMessage("Great! Let me know if you need anything. 😊");
@@ -3089,7 +3099,7 @@
             showQuickReplies(['Socks', 'T-Shirts & Polos', 'Cart help', 'Shipping']);
             setTimeout(() => setAvatar('neutral'), 2500);
           }
-        }, 600);
+        }, REPLY_DELAY);
         return;
       }
 
@@ -3102,7 +3112,7 @@
         addBotMessage(reply.text); setAvatar(reply.emotion);
         showQuickReplies(reply.quick);
         setTimeout(() => setAvatar('neutral'), 2500);
-      }, 700);
+      }, REPLY_DELAY);
     }
 
     // (WELCOME SEQUENCE는 상단 load 핸들러로 통합 — 중복 제거)

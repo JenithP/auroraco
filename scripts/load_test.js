@@ -43,7 +43,7 @@ async function runSession(browser, i) {
   try {
     await wait(rand(0, 3000));  // 접속 시각을 조금씩 흩뜨린다
     await page.goto(`${BASE_URL}/?c=${c}&a=${a}&sk=${STUDY_KEY}&PROLIFIC_PID=${pid}&STUDY_ID=loadtest&SESSION_ID=lt${i}`);
-    await wait(rand(2500, 4000));
+    await wait(rand(13000, 14500));   // 웰컴 GIF 10.4초 + 인삿말
     await page.evaluate(() => handleQuick('Start Shopping'));
     await wait(rand(800, 1500));
 
@@ -74,17 +74,19 @@ async function runSession(browser, i) {
     } else {
       await page.evaluate(() => confirmPayment());
       if (c === 'se') {
-        await wait(6500);   // 결제 5초 후 챗봇 자동 팝업
+        await wait(16500);   // 결제 결과 5초 + GIF 6초 + 메시지 2개
         await page.evaluate(() => handleQuick('Sum error (wrong total)'));
-        await wait(4500);
+        await wait(8000);
         if (Math.random() < 0.5) {
           await page.evaluate(() => handleQuick('Will I get a refund?'));
-          await wait(1500);
+          await wait(2500);
         }
         await page.evaluate(() => handleQuick('Okay, understood'));
-        await wait(2500);
+        await wait(7500);
       } else {
-        await wait(3500);
+        await wait(15500);   // 결제 결과 5초 + GIF 6초 + 메시지 2개
+        await page.evaluate(() => handleQuick('Thanks!'));
+        await wait(2500);
       }
       result.code = await page.evaluate(() => {
         const m = [...document.querySelectorAll('#chatMessages .msg.bot')].map(e => e.textContent).join(' ')
