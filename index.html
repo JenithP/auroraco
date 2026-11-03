@@ -2958,14 +2958,18 @@
       const input = document.getElementById('chatInput');
       const text = input.value.trim(); if (!text) return;
       pushLog('CHATBOT_USER_MSG', 'Text: ' + _logText(text));
+      // 코드 발급 전이면 직접 입력해도 코드로 가는 버튼을 남긴다
+      const codePending = window._normalCodeGate || window._pendingPayCode;
+      const keptChips = [...document.querySelectorAll('#quickReplies .quick-btn')].map(b => b.textContent);
       input.value = ''; clearQuickReplies(); addUserMessage(text);
       addTyping(); setAvatar('neutral');
       setTimeout(() => {
         removeTyping();
         const reply = getBotReply(text);
         addBotMessage(reply.text); setAvatar(reply.emotion);
-        // 코드 발급 전이면 직접 입력해도 Thanks! 버튼을 남긴다
-        showQuickReplies(window._normalCodeGate ? ['Thanks!'] : reply.quick);
+        // 대화가 진행 중이라 남길 버튼이 없으면 그대로 둔다 (곧 대화 쪽에서 버튼을 띄운다)
+        if (!codePending) showQuickReplies(reply.quick);
+        else if (keptChips.length) showQuickReplies(keptChips);
         setTimeout(() => setAvatar('neutral'), 2500);
       }, REPLY_DELAY);
     }
@@ -3007,13 +3011,17 @@
       }
 
       // ===== SUM 에러 선택 =====
-      if (option === 'Sum error (wrong total)') {
+      // 코드 발급 전 sumerror에서 No problem!을 눌러도 같은 안내를 거쳐 코드를 받게 한다
+      const dismissedSumError = option === 'No problem!' && window._pendingPayCode;
+      if (option === 'Sum error (wrong total)' || dismissedSumError) {
         clearQuickReplies(); addUserMessage(option);
         addTyping(); setAvatar('neutral');
         setTimeout(() => {
           removeTyping();
           if (ERROR_TYPE === 'sumerror') {
-            botSay(["I see — it looks like there may have been a billing discrepancy. I've flagged this for our technical team. 🔍",
+            botSay([dismissedSumError
+              ? "Our records still show a billing discrepancy on this order, so I've flagged this for our technical team. 🔍"
+              : "I see — it looks like there may have been a billing discrepancy. I've flagged this for our technical team. 🔍",
               "Unfortunately, this type of issue typically takes 2–3 business days to fully review and resolve. We sincerely apologize for the inconvenience."], () => {
               setAvatar('neutral');
               showQuickReplies(['Will I get a refund?', 'Okay, understood']);
