@@ -79,9 +79,11 @@ def neutral_talking_offsets(p, s):
 
 def resting_half_width(points):
     """Median mouth half-width over the frames where the lips are together."""
+    widths = [mouth_axes(p)[3] for p in points if p is not None]
     closed = [mouth_axes(p)[3] for p in points
               if p is not None and (p[14] - p[13]) @ mouth_axes(p)[2] < 0.1 * mouth_axes(p)[3]]
-    return np.median(closed)
+    # Continuous speech may never close the lips; the narrower speech shapes stand in for rest.
+    return np.median(closed) if closed else np.percentile(widths, 20)
 
 
 def render(frames, big, points, offsets, strength):

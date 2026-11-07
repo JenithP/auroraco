@@ -36,14 +36,14 @@ async function runSession(browser, i) {
   const result = { PROLIFIC_PID: pid, code: '', cond: a, errorType: ERROR_TYPE[c], exit, error: '' };
 
   const ctx = await browser.newContext();
-  // 상품 이미지·GIF는 로깅과 무관하고 용량이 커서 막는다 (아바타 비디오는 그대로)
+  // 상품 이미지는 로깅과 무관하고 용량이 커서 막는다 (아바타 비디오는 그대로)
   await ctx.route(/\.(png|jpe?g|gif)$/i, r => r.abort());
   const page = await ctx.newPage();
   const wait = ms => page.waitForTimeout(ms);
   try {
     await wait(rand(0, 3000));  // 접속 시각을 조금씩 흩뜨린다
     await page.goto(`${BASE_URL}/?c=${c}&a=${a}&sk=${STUDY_KEY}&PROLIFIC_PID=${pid}&STUDY_ID=loadtest&SESSION_ID=lt${i}`);
-    await wait(rand(13000, 14500));   // 웰컴 GIF 10.4초 + 인삿말
+    await wait(rand(2500, 4000));   // 인삿말
     await page.evaluate(() => handleQuick('Start Shopping'));
     await wait(rand(800, 1500));
 
@@ -74,7 +74,7 @@ async function runSession(browser, i) {
     } else {
       await page.evaluate(() => confirmPayment());
       if (c === 'se') {
-        await wait(16500);   // 결제 결과 5초 + GIF 6초 + 메시지 2개
+        await wait(9500);   // 결제 결과 5초 + 메시지 2개
         await page.evaluate(() => handleQuick('Sum error (wrong total)'));
         await wait(8000);
         if (Math.random() < 0.5) {
@@ -84,7 +84,7 @@ async function runSession(browser, i) {
         await page.evaluate(() => handleQuick('Okay, understood'));
         await wait(7500);
       } else {
-        await wait(15500);   // 결제 결과 5초 + GIF 6초 + 메시지 2개
+        await wait(9500);   // 결제 결과 5초 + 메시지 2개
         await page.evaluate(() => handleQuick('Thanks!'));
         await wait(2500);
       }
