@@ -74,7 +74,7 @@ async function runSession(browser, i) {
     } else {
       await page.evaluate(() => confirmPayment());
       if (c === 'se') {
-        await wait(21000);   // 결제 결과 5초 + 말풍선 2개 (말이 끝난 뒤 다음 말풍선)
+        await wait(21500);   // 결제 결과 5초 + 닫힘 0.6초 + 말풍선 2개 (말이 끝난 뒤 다음 말풍선)
         await page.evaluate(() => handleQuick('Sum error (wrong total)'));
         await wait(15500);
         if (Math.random() < 0.5) {
@@ -84,7 +84,7 @@ async function runSession(browser, i) {
         await page.evaluate(() => handleQuick('Okay, understood'));
         await wait(13000);
       } else {
-        await wait(15000);   // 결제 결과 5초 + 말풍선 2개
+        await wait(16000);   // 결제 결과 5초 + 닫힘 0.6초 + 말풍선 2개
         await page.evaluate(() => handleQuick('Thanks!'));
         await wait(2500);
       }

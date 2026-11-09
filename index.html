@@ -1268,6 +1268,35 @@
 
     .success-bg.open {
       display: flex;
+      animation: fadeIn 0.6s ease both;
+    }
+
+    /* 5초 뒤 결과 화면이 천천히 사라진 다음 챗봇이 뜬다 (hideSuccess) */
+    .success-bg.closing {
+      animation: fadeOut 0.6s ease both;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+
+    /* 튀지 않고 천천히 떠오르는 등장 (결제 결과 카드, 챗봇 창) */
+    @keyframes softIn {
+      from {
+        opacity: 0;
+        transform: translateY(28px) scale(0.97);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
 
     .success-modal {
@@ -1278,7 +1307,7 @@
       width: 420px;
       max-width: 100%;
       box-shadow: var(--shadow-lg);
-      animation: popIn 0.35s cubic-bezier(.34, 1.56, .64, 1);
+      animation: softIn 0.9s cubic-bezier(.22, 1, .36, 1) 0.15s both;
     }
 
     .success-icon {
@@ -2060,10 +2089,7 @@
         window._pendingNormalCode = payCode;
         // normal만: 결제 결과를 sumerror와 같은 5초 보여준 뒤 챗봇 등장. delay는 이미 챗봇 떠있었으므로 제외
         if (!window._wasDelay) {
-          setTimeout(() => {
-            document.getElementById('successModal').classList.remove('open');
-            autoChatbotPopup('normal_complete');
-          }, 5000);
+          setTimeout(() => hideSuccess(() => autoChatbotPopup('normal_complete')), 5000);
         }
       }
 
@@ -2071,11 +2097,19 @@
       if (ERROR_TYPE === 'sumerror') {
         errorFlag = true;
         window._pendingPayCode = payCode;  // 챗봇 마지막 메시지용
-        setTimeout(() => {
-          document.getElementById('successModal').classList.remove('open');
-          autoChatbotPopup();
-        }, 5000);
+        setTimeout(() => hideSuccess(() => autoChatbotPopup()), 5000);
       }
+    }
+
+    // 결제 결과 화면을 천천히 닫고(0.6초) 다음 화면을 띄운다
+    const SUCCESS_FADE_MS = 600;
+    function hideSuccess(then) {
+      const modal = document.getElementById('successModal');
+      modal.classList.add('closing');
+      setTimeout(() => {
+        modal.classList.remove('open', 'closing');
+        if (then) then();
+      }, SUCCESS_FADE_MS);
     }
 
     function showInsufficientModal(charged) {
@@ -2473,7 +2507,22 @@
       z-index: 99998;
       flex-direction: column;
       overflow: hidden;
-      animation: popIn 0.3s cubic-bezier(.34, 1.56, .64, 1);
+      animation: chatIn 0.8s cubic-bezier(.22, 1, .36, 1) both;
+    }
+
+    /* 창 위치는 transform(가운데 정렬)이 맡으므로 등장 움직임은 translate·scale 속성으로 따로 준다 */
+    @keyframes chatIn {
+      from {
+        opacity: 0;
+        translate: 0 28px;
+        scale: 0.97;
+      }
+
+      to {
+        opacity: 1;
+        translate: 0 0;
+        scale: 1;
+      }
     }
 
     .chatbot-window.open {
@@ -2587,7 +2636,7 @@
       border-radius: 16px;
       font-size: 13px;
       line-height: 1.6;
-      animation: msgIn 0.2s ease;
+      animation: msgIn 0.45s ease;
     }
 
     @keyframes msgIn {
