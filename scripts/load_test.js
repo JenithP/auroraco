@@ -43,7 +43,7 @@ async function runSession(browser, i) {
   try {
     await wait(rand(0, 3000));  // 접속 시각을 조금씩 흩뜨린다
     await page.goto(`${BASE_URL}/?c=${c}&a=${a}&sk=${STUDY_KEY}&PROLIFIC_PID=${pid}&STUDY_ID=loadtest&SESSION_ID=lt${i}`);
-    await wait(rand(2500, 4000));   // 인삿말
+    await wait(rand(9000, 10000));   // 인삿말 (입력 중 1.5초 + 말하기 최대 6초)
     await page.evaluate(() => handleQuick('Start Shopping'));
     await wait(rand(800, 1500));
 
@@ -74,17 +74,17 @@ async function runSession(browser, i) {
     } else {
       await page.evaluate(() => confirmPayment());
       if (c === 'se') {
-        await wait(9500);   // 결제 결과 5초 + 메시지 2개
+        await wait(21000);   // 결제 결과 5초 + 말풍선 2개 (말이 끝난 뒤 다음 말풍선)
         await page.evaluate(() => handleQuick('Sum error (wrong total)'));
-        await wait(8000);
+        await wait(15500);
         if (Math.random() < 0.5) {
           await page.evaluate(() => handleQuick('Will I get a refund?'));
           await wait(2500);
         }
         await page.evaluate(() => handleQuick('Okay, understood'));
-        await wait(7500);
+        await wait(13000);
       } else {
-        await wait(9500);   // 결제 결과 5초 + 메시지 2개
+        await wait(15000);   // 결제 결과 5초 + 말풍선 2개
         await page.evaluate(() => handleQuick('Thanks!'));
         await wait(2500);
       }

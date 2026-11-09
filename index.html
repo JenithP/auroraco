@@ -2838,12 +2838,13 @@
       });
     }
     // 메시지 길이만큼 입을 움직인다 (글자당 55ms, 1.2~6초). 이어지는 메시지는 시간을 늘린다
+    function talkMs(text) { return Math.min(6000, Math.max(1200, text.length * 55)); }
     let _talkTimer = null;
     function avatarSpeak(text) {
       const area = document.querySelector('.chatbot-avatar-area');
       area.classList.add('talking');
       clearTimeout(_talkTimer);
-      _talkTimer = setTimeout(() => area.classList.remove('talking'), Math.min(6000, Math.max(1200, text.length * 55)));
+      _talkTimer = setTimeout(() => area.classList.remove('talking'), talkMs(text));
     }
 
     let chatOpen = false, chatGreeted = false, errorHandled = false;
@@ -2917,17 +2918,21 @@
       document.getElementById('chatMessages').appendChild(el); scrollChat();
     }
     function removeTyping() { const el = document.getElementById('typingIndicator'); if (el) el.remove(); }
-    // 메시지 속도: 참가자 입력에 답할 때까지의 시간, 앞 메시지를 읽을 시간(글자 수 비례, 1.5~4초)
+    // 메시지 속도: 참가자 입력에 답할 때까지의 시간, 다음 말풍선 전 입력 중 표시 시간
     const REPLY_DELAY = 1500;
-    function readDelay(text) { return Math.min(4000, Math.max(1500, text.length * 30)); }
-    // 입력 중 표시와 함께 메시지를 하나씩 보낸다. done은 마지막 메시지 요소를 받는다
-    function botSay(texts, done, delay = REPLY_DELAY) {
+    const TYPING_MS = 1200;
+    // 말풍선을 하나씩 보낸다: 입력 중 표시 → 말풍선(아바타가 말함) → 말이 끝나면 다음 입력 중 표시.
+    // each(el, i)는 말풍선이 뜰 때, done(el)은 마지막 말이 끝난 뒤 불린다
+    function botSay(texts, done, delay = REPLY_DELAY, each) {
       addTyping();
       setTimeout(() => {
         removeTyping();
         const el = addBotMessage(texts[0]);
-        if (texts.length > 1) botSay(texts.slice(1), done, readDelay(texts[0]));
-        else if (done) done(el);
+        if (each) each(el);
+        setTimeout(() => {
+          if (texts.length > 1) botSay(texts.slice(1), done, TYPING_MS, each);
+          else if (done) done(el);
+        }, talkMs(texts[0]));
       }, delay);
     }
     function scrollChat() { const m = document.getElementById('chatMessages'); m.scrollTop = m.scrollHeight; }
@@ -3087,21 +3092,19 @@
             // 이슈 해결 로그가 저장된 뒤(최대 3초) 코드를 보여준다
             await pushLog('CHATBOT_ISSUE_RESOLVED', 'Issue: sumerror | Code: ' + code);
             removeTyping();
-            const intro = "Our team will follow up within 2–3 business days. Here is your case reference code:";
-            addBotMessage(intro);
-            botSay(["📋 Case Code: " + code], (el) => {
-              addCopyButton(el, code);
-              setAvatar('neutral');
-              botSay(["⚠️ Please return to SURVEY SITE and enter this code. You must record this code to complete the study."],
-                () => showQuickReplies(['Socks', 'T-Shirts & Polos', 'Cart help', 'Shipping']));
-            }, readDelay(intro));
+            const codeText = "📋 Case Code: " + code;
+            botSay(["Our team will follow up within 2–3 business days. Here is your case reference code:", codeText,
+              "⚠️ Please return to SURVEY SITE and enter this code. You must record this code to complete the study."],
+              () => showQuickReplies(['Socks', 'T-Shirts & Polos', 'Cart help', 'Shipping']), 0,
+              (el) => { if (el.textContent === codeText) addCopyButton(el, code); });
           } else if (option === 'Thanks!' && window._normalCodeGate) {
             // 정상 결제: 코드 발급
             window._normalCodeGate = false;
             const code = window._pendingNormalCode;
             removeTyping();
-            addCopyButton(addBotMessage("📋 Your order code: " + code), code);
-            botSay(["⚠️ Please return to SURVEY SITE and enter this code. You must record this code to complete the study."]);
+            const codeText = "📋 Your order code: " + code;
+            botSay([codeText, "⚠️ Please return to SURVEY SITE and enter this code. You must record this code to complete the study."],
+              null, 0, (el) => { if (el.textContent === codeText) addCopyButton(el, code); });
           } else {
             removeTyping();
             addBotMessage("Great! Let me know if you need anything. 😊");
