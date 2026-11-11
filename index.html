@@ -1077,8 +1077,10 @@
       padding: 20px;
     }
 
+    /* 결제 창은 배경이 먼저 어두워지고, 카드 창이 조금 늦게 천천히 떠오른다 */
     .pay-modal-bg.open {
       display: flex;
+      animation: fadeIn 0.6s ease both;
     }
 
     .pay-modal {
@@ -1087,7 +1089,7 @@
       width: 460px;
       max-width: 100%;
       box-shadow: var(--shadow-lg);
-      animation: popIn 0.3s cubic-bezier(.34, 1.56, .64, 1);
+      animation: softIn 1s cubic-bezier(.22, 1, .36, 1) 0.25s both;
       overflow: hidden;
     }
 
@@ -2969,7 +2971,9 @@
     function removeTyping() { const el = document.getElementById('typingIndicator'); if (el) el.remove(); }
     // 메시지 속도: 참가자 입력에 답할 때까지의 시간, 다음 말풍선 전 입력 중 표시 시간
     const REPLY_DELAY = 1500;
-    const TYPING_MS = 1200;
+    const TYPING_MS = 1500;
+    // 아바타가 말을 마친 뒤 다음 입력 중 표시까지 잠깐 쉰다
+    const BUBBLE_PAUSE_MS = 300;
     // 말풍선을 하나씩 보낸다: 입력 중 표시 → 말풍선(아바타가 말함) → 말이 끝나면 다음 입력 중 표시.
     // each(el, i)는 말풍선이 뜰 때, done(el)은 마지막 말이 끝난 뒤 불린다
     function botSay(texts, done, delay = REPLY_DELAY, each) {
@@ -2979,7 +2983,7 @@
         const el = addBotMessage(texts[0]);
         if (each) each(el);
         setTimeout(() => {
-          if (texts.length > 1) botSay(texts.slice(1), done, TYPING_MS, each);
+          if (texts.length > 1) setTimeout(() => botSay(texts.slice(1), done, TYPING_MS, each), BUBBLE_PAUSE_MS);
           else if (done) done(el);
         }, talkMs(texts[0]));
       }, delay);
